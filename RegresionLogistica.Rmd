@@ -1,0 +1,255 @@
+---
+title: "Regresión Logística"
+author: "Alexander A. Ramírez M. (alexanderramirez.me) y Daysi Febles (daysilorenafeblesr@gmail.com)"
+date: "27/3/2017"
+output:
+  pdf_document: default
+  html_document: default
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#https://github.com/stefano-meschiari/latex2exp
+#install.packages('latex2exp')
+library(latex2exp)
+```
+
+## Marco Teórico
+
+Para predecir el comportamiento de una variable que depende de otras variables es usual la aplicación de los métodos de regresión. Entre ellos el más popular es la regresión lineal. El proceso consiste en encontrar los parámetros de una función lineal (una recta en este caso) que mejor se ajusta (la de menor distancia entre los puntos y la recto) a los datos. El criterio para encontrar la mejor básicamente consiste en minimizar los errores y para ellos se utiliza el método de mínimos cuadrados.
+
+Hay un caso en el cual la regresión lineal no se comporta apropiadamente. Por ejemplo vamos a tomar el ejemplo donde....
+
+
+Para el caso en el cual la variable dependiente toma valores discretos y en particular toma dos valores, es decir es dicotómica o binaria, se aplica un método distinto.
+
+Por ejemplo,
+
+### Modelo de Regresión Logística
+
+El modelo de regresión logística guarda muchas similitudes con el modelo de regresión lineal. El modelo consiste en una variable dependiente (explicada) usualmente denotada por $y$ y una o varias variables independientes denotadas por $x_i$.
+
+$$
+\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) = \frac{e^{\beta_0+\beta_1x_1+\dots+\beta_px_p}}{1+e^{\beta_0+\beta_1x_1+\dots+\beta_px_p}}
+$$
+
+Como la variable dependiente toma dos valores, a saber, $Y=0 \vee  Y=1$ entonces $\mathbb{E}(Y=1|x_1,x_2,\dots,x_p)=P(Y=1|x_1,x_2,\dots,x_p)$. Es decir, la esperanza de que $Y=1$ dado un conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$ es igual a la probabilidad de que $Y=1$ dado el conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$.
+
+$$
+\begin{array}{rl}
+\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) &= 1\times P(Y=1|x_1,x_2,\dots,x_p) + 0\times P(Y=0|x_1,x_2,\dots,x_p)\\
+&= P(Y=1|x_1,x_2,\dots,x_p)
+\end{array}
+$$
+
+En el caso de una regresión logística simple la ecuación sería
+
+$$
+\mathbb{E}(Y=1|x) = P(Y=1|x) = \frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}
+$$
+
+Por ejemplo si $\beta_0=-7$ y $\beta_1=3$ para 
+
+$$
+\mathbb{E}(Y=1|x) = P(Y=1|x) = \frac{e^{-7+3x}}{1+e^{-7+3x}}
+$$
+
+
+
+Tenemos el gráfico siguiente:
+
+```{r}
+E_y<-c()
+beta0<- -7
+beta1<- 3
+for(x in seq(0,5,by=0.01)) {
+  p_i<-exp(beta0+beta1*x)
+  E_y<-c(E_y, p_i/(1+p_i))
+}
+plot(seq(0,5,by=0.01),E_y, type = "l", 
+     xlab = TeX('$x$'), 
+     ylab = TeX('$E(Y=1 | x)$'), 
+     main = TeX('Regresión Logística $\\beta_0= -7$ y $\\beta_1= 3$'))
+```
+
+### Estimación de los parámetros del modelo de regresión logística
+
+En el caso de la regresión lineal, simple o múltiple, para encontrar el estimador máximo verosimil de los parámetros se aplica el método de mínimos cuadrados. Esto permite obtener la estimación $\hat\beta_0,\hat\beta_1,\dots,\hat\beta_p$ de los parámetros $\beta_0,\beta_1,\dots,\beta_p$ del modelo.
+
+En el caso de la regresión logística, la relación entre la variable dependiente y las variables independientes no es lineal. Entonces el modelo de regresión logistica estimado queda
+
+$$
+\hat{y}=\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) = P(Y=1|x_1,x_2,\dots,x_p) = \frac{e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}{1+e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}
+$$
+
+Una vez obtenidos los parámetros estimados podemos calcular la probabilidad cuando las variables independientes toman valores específicos.
+
+### Prueba de significancia
+
+En todos los modelos de regresión es importante entender y calcular cual es el nivel de aporte o significancia de cada variable al modelo de regresión. La pregunta es ¿Qué tanto aporta una variable para predecir la variable dependiente?.
+
+Para ello se compara el resultado del modelo de regresión con los parámetros y sin los parámetros. Por otra parte en el caso individual, se prueba el nivel de aporte de una variable específica al modelo de regresión. 
+
+En primer término se realiza una prueba de significancia global, es decir, se realiza la prueba de hipótesis siguiente
+
+> $H_0$: $\beta_1=\beta_2=\dots=\beta_p=0$
+
+> $H_A$: uno o varios de los parámetros son distintos de cero
+
+#### Prueba de hipótesis global
+
+Para probar si los 
+
+#### Prueba de hipótesis por variable
+
+### Cociente de verosimilitudes
+
+La verosimilitud de un evento se define como la razón entre la probabilidad de que el evento sea exitoso (ocurra) y la probabilidad de que el evento falle (no ocurra).
+
+$$
+Verosimilitud=V=\frac{P(Y=1|x_1,x_2,\dots,x_p)}{P(Y=0|x_1,x_2,\dots,x_p)}=\frac{P(Y=1|x_1,x_2,\dots,x_p)}{1-P(Y=1|x_1,x_2,\dots,x_p)}
+$$
+
+El cociente de verosimilitudes mide el cambio que tiene sobre las probabilidades el aumento en una unidad en una de las variables independientes del modelo.
+
+Por otra parte el cociente de verosimilitudes mide el efecto o impacto que genera el cambio en una unidad de una de las variables independientes.
+
+Entonces el cociente de verosimilitud se calcula como sigue
+
+$$
+\text{Cociente de verosimilitud}=L_{x_i}=\frac{V_{x_i=k+1}}{V_{x_i=k}}=\displaystyle\frac{\frac{P(Y=1|x_1,x_2,\dots,x_i=k+1,\dots,x_p)}{1-P(Y=1|x_1,x_2,\dots,x_i=k+1,\dots,x_p)}}{\frac{P(Y=1|x_1,x_2,\dots,x_i=k,\dots,x_p)}{1-P(Y=1|x_1,x_2,\dots,x_i=k,\dots,x_p)}}
+$$
+
+Es importante notar que esta razón de verosimilitudes se calcula manteniendo el resto de las variables independientes constantes.
+
+Sin embargo hay un método más sencillo para calcular la razón de verosimilitudes utilizando el valor estimado del parámetro.
+
+$$
+\text{Cociente de verosimilitud}=L_{x_i}=e^{\beta_i}
+$$
+
+Una vez obtenidos los valores estimados de los parámetros del modelo es posible calcular el cociente de verosimilitud de cada variable. Además nos permite calcular los cambios en el cociente de verosimilitud cuando se presentan cambios mayores a una unidad en una variable independiente mientras que el resto de las variables independientes permanece constante.
+
+
+
+$$
+\text{Cociente de verosimilitud}=L_{\Delta(x_i)}=e^{\Delta(x_i)\beta_i}
+$$
+
+Finalmente, el cociente de verosimilitud permite calcular y comparar la verosimilitud de dos eventos diferentes. Si la verosimilitud es igual a $1$ indica que los dos eventos tienen la misma verosimilitud, si por otra parte la variable independiente es significativa y tiene efecto positivo sobre la probabilidad de que el evento ocurra, el cociente de verosimilitud debe ser mayor que $1$.
+
+### Transformación *logit*
+
+$$
+\ln(V)=\beta_0+\beta_1x_1+\dots+\beta_px_p
+$$
+
+$$
+g(x_1+\dots+x_p)=\beta_0+\beta_1x_1+\dots+\beta_px_p
+$$
+
+$$
+\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) = \displaystyle\frac{e^{g(x_1+\dots+x_p)}}{1+e^{g(x_1+\dots+x_p)}}
+$$
+
+$$
+\hat{g}(x_1+\dots+x_p)=\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p
+$$
+
+$$
+\displaystyle\frac{e^{g(x_1+\dots+x_p)}}{1+e^{g(x_1+\dots+x_p)}}=\frac{e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}{1+e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}
+$$
+
+
+## Marco Teórico
+
+Se quiere ajustar un modelo de regresión a variables cualitativas (ocurra o no algún evento). 
+
+Se desea predecir el valor de la variable respuesta $Y$ en un individuo de la población en función de ciertas características medibles $X_1,X_2,...,X_n$. 
+
+Utilizaremos la regresión logística para formular el modelo de regresión bajo estas condiciones.
+
+### Limitaciones del modelo de regresión lineal
+
+Veamos como surgue este tipo de modelos:
+
+Comenzaremos ajustando un modelo de regresión lineal simple cuando tenemos una sola variable explicativa, que llamaremos $X$ y que puede ser numérica o categórica, y una variable de respuesta $Y$ que es binaria.
+$$Y=\beta_0 + \beta_1X+\epsilon$$
+$$\epsilon \sim \mathcal{N}(0,\sigma)$$
+
+Como la variable respuesta es binaria (toma valor 0 o 1) diremos que es una variable aleatoria Bernoulli y con respecto a la $X$ es una variable observada, sus valores son conocidos. Asumiremos que tenemos $n$ elementos de ambas de la forma $(x_i,y_i)$ con $i=1,2,...,n$. $\epsilon$ representara el error aleatorio.
+
+Observemos los inconvenientes de este modelo:
+
+- Cuando calculamos la esperanza del modelo tenemos
+$$
+\begin{array}{rl}
+E(Y_i) & = E(\beta_0 + \beta_1X_i+\epsilon_i)\\
+& = E(\beta_0) + E(\beta_1X_i)+E(\epsilon_i)\\
+& = \beta_0 + \beta_1X_i
+\end{array}
+$$
+
+Si escribimos el modelo como $\beta_0 + \beta_1X_i=p_i$ donde $p_i=P(Y_i=1)$
+$$Y_i= \left \{ \begin{matrix} 1 \  \mbox{con probabilidad} \ p_i\\ 0 \ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.$$
+
+Así este modelo estimaría la probabilidad de que ocurra el evento $Y_i$. Como $p_i$ es una probabilidad su valor deberia estar entre 0 y 1 $(0\le p_i\le 1)$ para todo $i$. Pero como $X_i$, $\beta_0$ y $\beta_1$ pueden tomar cualquier valor entre $(-\infty,\infty)$ el modelo de regresión lineal no garantiza que siempre de un valor entre cero y uno.
+
+- Si conocemos la variable de explicativa $X$, los únicos valores que puede tomar la variable de respuesta es 0 o 1, esto implica que:
+$$
+\begin{array}{rl}
+\epsilon_i & = Y_i-\beta_0+\beta_1X_i\\
+& = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ p_i \\ 0 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ 1-p_i \end{matrix} \right.\\
+& = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ p_i \\ -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
+& = \left \{ \begin{matrix} 1 -p_i\ \mbox{con probabilidad} \ p_i \\ -p_i\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.
+\end{array}
+$$
+
+Así $\epsilon$ tendría una distribución discreta.
+$$
+\begin{array}{rl}
+E(\epsilon_i) & = (1 -(\beta_0+\beta_1X_i))P(\epsilon_i=1 -(\beta_0+\beta_1X_i))+ (-(\beta_0+\beta_1X_i))P(\epsilon_i=-(\beta_0+\beta_1X_i))\\
+& = (1 -p_i)P(\epsilon_i=1 -p_i)+ (-p_i)P(\epsilon_i=-p_i)\\
+& = (1 -p_i)p_i-(p_i)(1-p_i)\\
+& = p_i-p_i^2-p_i+p_i^2\\
+& =0
+\end{array}
+$$
+
+Aunque la esperanza de esta variable es cero, no cumple con el supuesto de normalidad de los errores, ya que toma valores discretos. Esto nos llevaría a estimadores poco eficientes.
+
+- Varianza de los errores:
+
+Para el cálculo de la varianza de los errores tenemos que definir primero $\epsilon_i^2$
+$$
+\begin{array}{rl}
+\epsilon_i^2 & = \left \{ \begin{matrix} (1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ (-p_i)^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
+& = \left \{ \begin{matrix} (1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ p_i^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right. 
+\end{array}
+$$
+
+Así
+$$
+\begin{array}{rl}
+Var(\epsilon_i) & = E(\epsilon_i^2)- E(\epsilon_i)^2\\
+& = E(\epsilon_i^2)\\
+& = (1 -p_i)^2P(\epsilon_i=(1 -p_i)^2)+p_i^2P(\epsilon_i=p_i^2)\\
+& = (1 -p_i)^2p_i+p_i^2(1-p_i)\\
+& = (1 -p_i)((1 -p_i)p_i+p_i^2)\\
+& = (1 -p_i)(p_i-p_i^2+p_i^2)\\
+& = (1 -p_i)p_i\\
+& = (1 -(\beta_0+\beta_1X_i))(\beta_0+\beta_1X_i)
+\end{array}
+$$
+
+También contradice la hipótesis de los $\epsilon_i$, donde la varianza tiene que ser constante, acabamos de obtener una función que depende de la variable explicativa, por lo tanto no es constante.
+
+### Formulación de un modelo de regresión
+
+Como vimos anteriormente el modelo lineal $\beta_0+\beta_1X_i$ no es bueno para predecir los valores de $p_i$. Para garantizar que este valor este entre cero y uno, tomaremos cualquier función de distribución $F$ y lo aproximaremos mediante
+$$F(\beta_0+\beta_1X_i)=p_i\ \mbox{para}\ i=1,...,n$$
+Veamos algunas funciones de distribución:
+
+1) $F$ es una función de distribución Uniforme
+
