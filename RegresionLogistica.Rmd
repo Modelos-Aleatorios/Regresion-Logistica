@@ -17,14 +17,105 @@ library(latex2exp)
 
 ## Marco Teórico
 
-Para predecir el comportamiento de una variable que depende de otras variables es usual la aplicación de los métodos de regresión. Entre ellos el más popular es la regresión lineal. El proceso consiste en encontrar los parámetros de una función lineal (una recta en este caso) que mejor se ajusta (la de menor distancia entre los puntos y la recto) a los datos. El criterio para encontrar la mejor básicamente consiste en minimizar los errores y para ellos se utiliza el método de mínimos cuadrados.
+Para predecir el comportamiento de una variable que depende de otras variables es usual la aplicación de los métodos de regresión. Entre ellos el más popular es la regresión lineal. El proceso consiste en encontrar los parámetros de una función lineal (una recta en este caso) que mejor se ajusta (la de menor distancia entre los puntos y la recta) a los datos. El criterio para encontrar la mejor, básicamente, consiste en minimizar los errores y para ellos se utiliza el método de mínimos cuadrados.
 
-Hay un caso en el cual la regresión lineal no se comporta apropiadamente. Por ejemplo vamos a tomar el ejemplo donde....
+Hay un caso en el cual la regresión lineal no se comporta apropiadamente, y este es el caso donde la variable de respuesta es dicotómica (ocurra o no algún evento). Veamos a continuación porque pasa esto: 
 
+Supongamos que queremos predecir el valor de la variable de respuesta $Y$ dicotómica en un individuo de la población en función de ciertas características medibles $X_1,X_2,...,X_n$. 
 
-Para el caso en el cual la variable dependiente toma valores discretos y en particular toma dos valores, es decir es dicotómica o binaria, se aplica un método distinto.
+Comenzaremos ajustando un modelo de regresión lineal simple cuando tenemos una sola variable explicativa, que llamaremos $X$ y que puede ser numérica o categórica, es decir
+$$Y=\beta_0 + \beta_1X+\epsilon$$
+$$\epsilon \sim \mathcal{N}(0,\sigma)$$
 
-Por ejemplo,
+Como la variable respuesta es binaria (toma valor 0 o 1) diremos que es una variable aleatoria Bernoulli y con respecto a la $X$ es una variable observada, sus valores son conocidos. Asumiremos que tenemos $n$ elementos de ambas de la forma $(x_i,y_i)$ con $i=1,2,...,n$. $\epsilon$ representara el error aleatorio.
+
+Observemos los inconvenientes de este modelo:
+
+- Cuando calculamos la esperanza del modelo tenemos
+$$
+\begin{array}{rl}
+E(Y_i) & = E(\beta_0 + \beta_1X_i+\epsilon_i)\\
+& = E(\beta_0) + E(\beta_1X_i)+E(\epsilon_i)\\
+& = \beta_0 + \beta_1X_i
+\end{array}
+$$
+
+Si escribimos el modelo como $\beta_0 + \beta_1X_i=p_i$ donde $p_i=P(Y_i=1)$
+$$Y_i= \left \{ \begin{matrix} 1 \  \mbox{con probabilidad} \ p_i\\ 0 \ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.$$
+
+Así este modelo estimaría la probabilidad de que ocurra el evento $Y_i$. Como $p_i$ es una probabilidad su valor deberia estar entre 0 y 1 $(0\le p_i\le 1)$ para todo $i$. Pero como $X_i$, $\beta_0$ y $\beta_1$ pueden tomar cualquier valor entre $(-\infty,\infty)$ el modelo de regresión lineal no garantiza que siempre de un valor entre cero y uno.
+
+- Si conocemos la variable de explicativa $X$, los únicos valores que puede tomar la variable de respuesta es 0 o 1, esto implica que:
+$$
+\begin{array}{rl}
+\epsilon_i & = Y_i-\beta_0+\beta_1X_i\\
+& = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ p_i \\ 0 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ 1-p_i \end{matrix} \right.\\
+& = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ p_i \\ -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
+& = \left \{ \begin{matrix} 1 -p_i\ \mbox{con probabilidad} \ p_i \\ -p_i\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.
+\end{array}
+$$
+
+Así $\epsilon$ tendría una distribución discreta.
+$$
+\begin{array}{rl}
+E(\epsilon_i) & = (1 -(\beta_0+\beta_1X_i))P(\epsilon_i=1 -(\beta_0+\beta_1X_i))+ (-(\beta_0+\beta_1X_i))P(\epsilon_i=-(\beta_0+\beta_1X_i))\\
+& = (1 -p_i)P(\epsilon_i=1 -p_i)+ (-p_i)P(\epsilon_i=-p_i)\\
+& = (1 -p_i)p_i-(p_i)(1-p_i)\\
+& = p_i-p_i^2-p_i+p_i^2\\
+& =0
+\end{array}
+$$
+
+Aunque la esperanza de esta variable es cero, no cumple con el supuesto de normalidad de los errores, ya que toma valores discretos. Esto nos llevaría a estimadores poco eficientes.
+
+- Varianza de los errores:
+
+Para el cálculo de la varianza de los errores tenemos que definir primero $\epsilon_i^2$
+$$
+\begin{array}{rl}
+\epsilon_i^2 & = \left \{ \begin{matrix} (1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ (-p_i)^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
+& = \left \{ \begin{matrix} (1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ p_i^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right. 
+\end{array}
+$$
+
+Así
+$$
+\begin{array}{rl}
+Var(\epsilon_i) & = E(\epsilon_i^2)- E(\epsilon_i)^2\\
+& = E(\epsilon_i^2)\\
+& = (1 -p_i)^2P(\epsilon_i=(1 -p_i)^2)+p_i^2P(\epsilon_i=p_i^2)\\
+& = (1 -p_i)^2p_i+p_i^2(1-p_i)\\
+& = (1 -p_i)((1 -p_i)p_i+p_i^2)\\
+& = (1 -p_i)(p_i-p_i^2+p_i^2)\\
+& = (1 -p_i)p_i\\
+& = (1 -(\beta_0+\beta_1X_i))(\beta_0+\beta_1X_i)
+\end{array}
+$$
+
+También contradice la hipótesis de los $\epsilon_i$, donde la varianza tiene que ser constante, acabamos de obtener una función que depende de la variable explicativa, por lo tanto no es constante.
+
+Como vimos anteriormente el modelo lineal $\beta_0+\beta_1X_i$ no es bueno para predecir los valores de $p_i$. Para garantizar que este valor este entre cero y uno, tomaremos cualquier función de distribución $F$ y lo aproximaremos mediante
+$$F(\beta_0+\beta_1X_i)=p_i\ \mbox{para}\ i=1,...,n$$
+Veamos algunas funciones de distribución:
+
+1) $F$ es una función de distribución Uniforme en $[0,1]$
+$$p_i = \left \{ 
+\begin{matrix} 
+1  & \mbox{si}\ \beta_0+\beta_1X_i\ge 1 \\
+\beta_0+\beta_1X_i &\mbox{si}\  0<\beta_0+\beta_1X_i<1 \\
+0 & \mbox{si}\ \beta_0+\beta_1X_i\le 0
+\end{matrix} \right. 
+$$
+
+2) $F$ es la función de distribución Normal (Modelo Probit)
+$$p_i=\Phi(\beta_0+\beta_1X_i)$$
+
+De donde $\Phi^{-1}(p_i)=\beta_0+\beta_1X_i$
+
+3) $F$ es la función de distribución logística
+$$p_i=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}}=g(X_i)$$
+Este modelo se conoce como **Modelo Logístico** o **Modelo Logit**.
+
 
 ### Modelo de Regresión Logística
 
@@ -164,92 +255,8 @@ $$
 
 ## Marco Teórico
 
-Se quiere ajustar un modelo de regresión a variables cualitativas (ocurra o no algún evento). 
 
-Se desea predecir el valor de la variable respuesta $Y$ en un individuo de la población en función de ciertas características medibles $X_1,X_2,...,X_n$. 
 
-Utilizaremos la regresión logística para formular el modelo de regresión bajo estas condiciones.
 
-### Limitaciones del modelo de regresión lineal
 
-Veamos como surgue este tipo de modelos:
-
-Comenzaremos ajustando un modelo de regresión lineal simple cuando tenemos una sola variable explicativa, que llamaremos $X$ y que puede ser numérica o categórica, y una variable de respuesta $Y$ que es binaria.
-$$Y=\beta_0 + \beta_1X+\epsilon$$
-$$\epsilon \sim \mathcal{N}(0,\sigma)$$
-
-Como la variable respuesta es binaria (toma valor 0 o 1) diremos que es una variable aleatoria Bernoulli y con respecto a la $X$ es una variable observada, sus valores son conocidos. Asumiremos que tenemos $n$ elementos de ambas de la forma $(x_i,y_i)$ con $i=1,2,...,n$. $\epsilon$ representara el error aleatorio.
-
-Observemos los inconvenientes de este modelo:
-
-- Cuando calculamos la esperanza del modelo tenemos
-$$
-\begin{array}{rl}
-E(Y_i) & = E(\beta_0 + \beta_1X_i+\epsilon_i)\\
-& = E(\beta_0) + E(\beta_1X_i)+E(\epsilon_i)\\
-& = \beta_0 + \beta_1X_i
-\end{array}
-$$
-
-Si escribimos el modelo como $\beta_0 + \beta_1X_i=p_i$ donde $p_i=P(Y_i=1)$
-$$Y_i= \left \{ \begin{matrix} 1 \  \mbox{con probabilidad} \ p_i\\ 0 \ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.$$
-
-Así este modelo estimaría la probabilidad de que ocurra el evento $Y_i$. Como $p_i$ es una probabilidad su valor deberia estar entre 0 y 1 $(0\le p_i\le 1)$ para todo $i$. Pero como $X_i$, $\beta_0$ y $\beta_1$ pueden tomar cualquier valor entre $(-\infty,\infty)$ el modelo de regresión lineal no garantiza que siempre de un valor entre cero y uno.
-
-- Si conocemos la variable de explicativa $X$, los únicos valores que puede tomar la variable de respuesta es 0 o 1, esto implica que:
-$$
-\begin{array}{rl}
-\epsilon_i & = Y_i-\beta_0+\beta_1X_i\\
-& = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ p_i \\ 0 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ 1-p_i \end{matrix} \right.\\
-& = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ p_i \\ -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
-& = \left \{ \begin{matrix} 1 -p_i\ \mbox{con probabilidad} \ p_i \\ -p_i\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.
-\end{array}
-$$
-
-Así $\epsilon$ tendría una distribución discreta.
-$$
-\begin{array}{rl}
-E(\epsilon_i) & = (1 -(\beta_0+\beta_1X_i))P(\epsilon_i=1 -(\beta_0+\beta_1X_i))+ (-(\beta_0+\beta_1X_i))P(\epsilon_i=-(\beta_0+\beta_1X_i))\\
-& = (1 -p_i)P(\epsilon_i=1 -p_i)+ (-p_i)P(\epsilon_i=-p_i)\\
-& = (1 -p_i)p_i-(p_i)(1-p_i)\\
-& = p_i-p_i^2-p_i+p_i^2\\
-& =0
-\end{array}
-$$
-
-Aunque la esperanza de esta variable es cero, no cumple con el supuesto de normalidad de los errores, ya que toma valores discretos. Esto nos llevaría a estimadores poco eficientes.
-
-- Varianza de los errores:
-
-Para el cálculo de la varianza de los errores tenemos que definir primero $\epsilon_i^2$
-$$
-\begin{array}{rl}
-\epsilon_i^2 & = \left \{ \begin{matrix} (1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ (-p_i)^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
-& = \left \{ \begin{matrix} (1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ p_i^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right. 
-\end{array}
-$$
-
-Así
-$$
-\begin{array}{rl}
-Var(\epsilon_i) & = E(\epsilon_i^2)- E(\epsilon_i)^2\\
-& = E(\epsilon_i^2)\\
-& = (1 -p_i)^2P(\epsilon_i=(1 -p_i)^2)+p_i^2P(\epsilon_i=p_i^2)\\
-& = (1 -p_i)^2p_i+p_i^2(1-p_i)\\
-& = (1 -p_i)((1 -p_i)p_i+p_i^2)\\
-& = (1 -p_i)(p_i-p_i^2+p_i^2)\\
-& = (1 -p_i)p_i\\
-& = (1 -(\beta_0+\beta_1X_i))(\beta_0+\beta_1X_i)
-\end{array}
-$$
-
-También contradice la hipótesis de los $\epsilon_i$, donde la varianza tiene que ser constante, acabamos de obtener una función que depende de la variable explicativa, por lo tanto no es constante.
-
-### Formulación de un modelo de regresión
-
-Como vimos anteriormente el modelo lineal $\beta_0+\beta_1X_i$ no es bueno para predecir los valores de $p_i$. Para garantizar que este valor este entre cero y uno, tomaremos cualquier función de distribución $F$ y lo aproximaremos mediante
-$$F(\beta_0+\beta_1X_i)=p_i\ \mbox{para}\ i=1,...,n$$
-Veamos algunas funciones de distribución:
-
-1) $F$ es una función de distribución Uniforme
 
