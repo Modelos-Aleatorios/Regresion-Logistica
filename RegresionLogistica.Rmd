@@ -140,12 +140,10 @@ Veamos que la ecuación $(1)$ cumple con las propiedades siguientes:
 A continuación probaremos estas tres propiedades:
 
 1.- Si $\beta_1 \ne 0$, entonces tenemos los tres caso siguientes:
-  
-   - Si $\beta_0 + \beta_1 X_i \to \infty$ entonces $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}} \to 1$
-
-   - Si $\beta_0 + \beta_1 X_i \to 0$ entonces $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}} \to \frac{1}{2}$
-   
-   - Si $\beta_0 + \beta_1 X_i \to -\infty$ entonces $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}} \to 0$
+    
+  - Si $\beta_0 + \beta_1 X_i \to \infty$ entonces $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}} \to 1$
+  - Si $\beta_0 + \beta_1 X_i \to 0$ entonces $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}} \to \frac{1}{2}$
+  - Si $\beta_0 + \beta_1 X_i \to -\infty$ entonces $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}} \to 0$
 
 La función $g$ es continua por ser composición de funciones continuas.
 
@@ -154,12 +152,12 @@ $$g(X_i)=\frac{1}{1+Ce^{-\beta_1X_i}}$$
 
 Sabemos por el comportamiento de la función exponencial que:
 
-   - Para $\beta_1>0$, si $a<b$ entonces $e^{-a\beta_1}>e^{-b\beta_1}$ por lo tanto
+  - Para $\beta_1>0$, si $a<b$ entonces $e^{-a\beta_1}>e^{-b\beta_1}$ por lo tanto
 $$g(a)=\frac{1}{1+Ce^{-\beta_1a}}<\frac{1}{1+Ce^{-\beta_1b}}=g(b)$$
 
 Así tenemos que $g(X_i)$ es monótona creciente si $\beta_1>0$.
 
-   - Para $\beta_1<0$, si $a<b$ se tiene que $e^{-b\beta_1}>e^{-a\beta_1}$ por lo tanto
+  - Para $\beta_1<0$, si $a<b$ se tiene que $e^{-b\beta_1}>e^{-a\beta_1}$ por lo tanto
 $$g(a)=\frac{1}{1+Ce^{-\beta_1a}}>\frac{1}{1+Ce^{-\beta_1b}}=g(b)$$   
 
 Así tenemos que la función $g(X_i)$ es monótona decreciente si $\beta_1<0$
@@ -218,30 +216,34 @@ De donde notamos que la variable $logit(p_i)$ mide la diferencia entre las proba
 
 ### Modelo de Regresión Logística
 
-Acabamos de ver la relación que hay entre el modelo de regresión logística y el modelo de regresión lineal. El modelo de regresión logistica consiste en una variable dependiente (explicada) usualmente denotada por $Y$ y una o varias variables independientes denotadas por $X_i$.
+Acabamos de ver la relación que hay entre el modelo de regresión logística y el modelo de regresión lineal. Como conclusión podemos decir que el modelo de regresión logistica consiste en una variable dependiente (explicada) usualmente denotada por $Y$ y una o varias variables independientes denotadas por $X_i$.
 $$
 \mathbb{E}(Y=1|x_1,x_2,\dots,x_p) = \frac{e^{\beta_0+\beta_1x_1+\dots+\beta_px_p}}{1+e^{\beta_0+\beta_1x_1+\dots+\beta_px_p}}
 $$
 
-Como la variable dependiente toma dos valores, a saber, $Y=0 \vee  Y=1$ entonces $\mathbb{E}(Y=1|x_1,x_2,\dots,x_p)=P(Y=1|x_1,x_2,\dots,x_p)$. Es decir, la esperanza de que $Y=1$ dado un conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$ es igual a la probabilidad de que $Y=1$ dado el conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$.
+Como la variable dependiente toma dos valores, a saber, $Y=0 \vee  Y=1$ entonces $$\mathbb{E}(Y=1|x_1,x_2,\dots,x_p)=P(Y=1|x_1,x_2,\dots,x_p)$$
+
+Es decir, la esperanza de que $Y=1$ dado un conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$ es igual a la probabilidad de que $Y=1$ dado el conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$. Veamos porque:
 $$
 \begin{array}{rl}
-\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) &= 1\times P(Y=1|x_1,x_2,\dots,x_p) + 0\times P(Y=0|x_1,x_2,\dots,x_p)\\
-&= P(Y=1|x_1,x_2,\dots,x_p)
+\mathbb{E}(Y|x_1,x_2,\dots,x_p) &= 1P(Y=1|x_1,x_2,\dots,x_p) + 0 P(Y=0|x_1,x_2,\dots,x_p)\\
+& = P(Y=1|x_1,x_2,\dots,x_p)\\
+& = \mathbb{E}(Y=1|x_1,x_2,\dots,x_p)
 \end{array}
 $$
 
-En el caso de una regresión logística simple la ecuación sería
-$$\mathbb{E}(Y=1|x) = P(Y=1|x) = \frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}$$
+En el caso de una regresión logística simple (una variable respuesta dado una variable explicativa) la ecuación sería
+$$\mathbb{E}(Y|x) = P(Y=1|x) = \frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}$$
+
+A esta expresión la vamos a llamar $\pi (x)$
+$$\pi(x)=\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}$$
 
 Por ejemplo si $\beta_0=-7$ y $\beta_1=3$ para 
-
 $$
-\mathbb{E}(Y=1|x) = P(Y=1|x) = \frac{e^{-7+3x}}{1+e^{-7+3x}}
+\pi(x)= \frac{e^{-7+3x}}{1+e^{-7+3x}}
 $$
 
-Tenemos el gráfico siguiente:
-
+Donde el gráfico es:
 ```{r}
 E_y<-c()
 beta0<- -7
@@ -256,29 +258,179 @@ plot(seq(0,5,by=0.01),E_y, type = "l",
      main = TeX('Regresión Logística $\\beta_0= -7$ y $\\beta_1= 3$'))
 ```
 
-### Estimación de los parámetros del modelo de regresión logística
+Aplicandole la transformación $logit$ al cociente de probabilidad $\frac{\pi(x)}{1-\pi(x)}$ tenemos
+$$
+\begin{array}{rl}
+g(x) & = ln\left(\frac{\pi(x)}{1-\pi(x)}\right)\\
+g(x) & = ln(\pi(x))-ln(1-\pi(x))\\
+g(x) & = ln\left(\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}} \right) - ln\left(1-\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}} \right)\\
+g(x) & = ln(e^{\beta_0+\beta_1x}) - ln(1+e^{\beta_0+\beta_1x}) -ln\left(\frac{1}{1+e^{\beta_0+\beta_1x}}\right)\\
+g(x) & = ln(e^{\beta_0+\beta_1x}) - ln(1+e^{\beta_0+\beta_1x}) -ln(1) +ln(1+e^{\beta_0+\beta_1x})\\
+g(x) & = ln(e^{\beta_0+\beta_1x})\\
+g(x) & = \beta_0+\beta_1x\\
+\end{array}
+$$
 
-En el caso de la regresión lineal, simple o múltiple, para encontrar el estimador máximo verosimil de los parámetros se aplica el método de mínimos cuadrados. Esto permite obtener la estimación $\hat\beta_0,\hat\beta_1,\dots,\hat\beta_p$ de los parámetros $\beta_0,\beta_1,\dots,\beta_p$ del modelo.
+Ésta transformación es importante ya que tiene muchas propiedades de un modelo de regresión lineal. Es lineal en sus parámetros, puede ser continua y puede tomar valores entre $-\infty$ y $\infty$ dependiendo de los valores que puede tomar $x$
 
-En el caso de la regresión logística, la relación entre la variable dependiente y las variables independientes no es lineal. Entonces el modelo de regresión logistica estimado queda
+Una diferencia muy importante entre el modelo de regresión lineal y el de regresión logistica es el siguiente:
 
+- Para el modelo de regresión lineal nosotros suponemos que $y=\mathbb{E}(Y|x)+\epsilon$, donde asumimos que $\epsilon$ es un error que representa la desviación de la media condicional, generalmente se asume que tiene una distribución Normal con media cero y varianza constante, esta suposición conlleva a que $y$ sea Normal con media $\mathbb{E}(Y|x)$ y varianza constante. 
+
+- En el caso con la variable de salida dicotómica suponemos que $y=\pi(x)+\epsilon$, donde $\epsilon$ solo podrá tomar dos valores:
+
+    - Si $y=1$ entonces $\epsilon=1-\pi(x)$ con probabilidad $\pi(x)$
+    - Si $y=0$ entonces $\epsilon= \pi(x)$ con probabilidad $1-\pi(x)$
+    
+Entonces la media de $\epsilon$ es 
+$$\begin{array}{rl}
+\mathbb{E}(\epsilon) & = (1-\pi(x))P(\epsilon=1-\pi(x))+\pi(x)P(\epsilon=\pi(x))\\
+\mathbb{E}(\epsilon) & = (1-\pi(x))\pi(x)+\pi(x)(1-\pi(x))\\
+\mathbb{E}(\epsilon) & = 0
+\end{array}
+$$
+
+y la varianza es
+$$
+\begin{array}{rl}
+Var(\epsilon) & = \mathbb{E}(\epsilon^2)-\mathbb{E}(\epsilon)^2=\mathbb{E}(\epsilon^2)\\
+Var(\epsilon) & = (1-\pi(x))^2 P(\epsilon^2=(1-\pi(x))^2)+\pi(x)^2P(\epsilon^2=\pi(x)^2)\\
+Var(\epsilon) & = (1-\pi(x))^2 \pi(x)+\pi(x)^2 (1-\pi(x))\\
+Var(\epsilon) & = (1-\pi(x))((1-\pi(x)) \pi(x)+\pi(x)^2)\\
+Var(\epsilon) & = (1-\pi(x))(\pi(x)-\pi(x)^2+\pi(x)^2)\\
+Var(\epsilon) & = (1-\pi(x))\pi(x)\\
+\end{array}
+$$
+Entonces tenemos que los errores se distribuyen Binomiales, y por lo tanto la variable de respuesta tiene una distribución Binomial.
+
+### Ajuste del modelos de regresión logística
+
+Tenemos que encontrar los parámetros desconocidos $\beta_0$ y $\beta_1$, el método más usado para estimarlos es el de mínimos cuadrados. En los modelos de regresión lineal la manera de calcular estos parámetos es maximizando la función de máxima verosimilitud (esta función expresa la probabilidad de los datos observados como una función de parámetros desconocidos). En el caso de los modelos de regresión logística tenemos:
+
+Como la variable de respuesta $Y$ es dicotómica, toma los valores 0 y 1. Entonces tenemos que $\pi(x)=\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}}$ proporciona la probabilidad de que $Y=1$ dado $x$, para el vector de parámetros $\beta=(\beta_0,\beta_1)$. Así $1-\pi(x)$ nos da la probabilidad de que $Y=0$ dado $x$. 
+
+Para un par $(x_i,y_i)$:
+
+  - Si $y_i=1$ la contribución que da la función de verosimilitud es $\pi(x_i)$
+  - Si $y_i=0$ la contribución que da la función de verosimilitud es $1-\pi(x_i)$
+
+Para expresar esta contribución a la función de verosimilitud del par $(x_i,y_i)$ tenemos la siguiente expresión:
+$$\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i}$$
+
+Asumiendo independencia en los datos observados, tenemos que la función de verosimilitud es el producto de la ecuación anterior de todos los $n$ datos
+$$l(\beta)=\prod_{i=1}^n \pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i}$$
+
+Como esta función es difícil de manejar aplicamos $ln$ y luego maximizamos, derivando con respecto a los parámetros e igualando a cero
+$$
+\begin{array}{rl}
+L(\beta) & = ln(l(\beta))\\
+L(\beta) & = ln \left( \prod_{i=1}^n \pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} \right)\\
+L(\beta) & = \sum_{i=1}^n  ln(\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i})\\
+L(\beta) & = \sum_{i=1}^n  ln(\pi(x_i)^{y_i})+ln((1-\pi(x_i))^{1-y_i})\\
+L(\beta) & = \sum_{i=1}^n  y_iln(\pi(x_i))+(1-y_i)ln(1-\pi(x_i))\\
+L(\beta) & = \sum_{i=1}^n  y_iln(\pi(x_i))+ln(1-\pi(x_i)) -y_iln(1-\pi(x_i))\\
+L(\beta) & = \sum_{i=1}^n  y_i\left( ln(\pi(x_i))-ln(1-\pi(x_i)) \right)+ln(1-\pi(x_i))\\
+L(\beta) & = \sum_{i=1}^n  y_i ln\left( \frac{\pi(x_i)}{1-\pi(x_i)} \right)+ln(1-\pi(x_i))\\
+\end{array}
+$$
+
+Recordemos que $ln\left( \frac{\pi(x_i)}{1-\pi(x_i)} \right)=\beta_0+\beta_1x_i$ y $1-\pi(x_i)=1-\frac{e^{\beta_0+\beta_1x_i}}{1+e^{\beta_0+\beta_1x_i}}=\frac{1}{1+e^{\beta_0+\beta_1x_i}}$.
+
+Sustituyendo ésto:
+$$
+\begin{array}{rl}
+L(\beta) & = \sum_{i=1}^n  y_i (\beta_0+\beta_1x_i)+ln\left(\frac{1}{1+e^{\beta_0+\beta_1x_i}}\right)\\
+L(\beta) & = \sum_{i=1}^n  y_i (\beta_0+\beta_1x_i)+ln(1)-ln(1+e^{\beta_0+\beta_1x_i})\\
+L(\beta) & = \sum_{i=1}^n  y_i (\beta_0+\beta_1x_i)-ln(1+e^{\beta_0+\beta_1x_i})\\
+\end{array}
+$$
+
+Ahora está en función de los parámetros $\beta_0$ y $\beta_1$, derivando con respecto a $\beta_0$:
+$$
+\begin{array}{rl}
+\frac{\partial L(\beta)}{\partial \beta_0} & = \sum_{i=1}^n y_i -\frac{1}{1+e^{\beta_0+\beta_1x_i}} e^{\beta_0+\beta_1x_i}\\
+\frac{\partial L(\beta)}{\partial \beta_0} & = \sum_{i=1}^n y_i -\frac{e^{\beta_0+\beta_1x_i}}{1+e^{\beta_0+\beta_1x_i}}\\
+\frac{\partial L(\beta)}{\partial \beta_0} & = \sum_{i=1}^n y_i -\pi(x_i)\\
+& \implies \sum_{i=1}^n y_i -\pi(x_i) = 0 \qquad (3)
+\end{array}
+$$
+
+Derivando con respecto a $\beta_1$:
+$$
+\begin{array}{rl}
+\frac{\partial L(\beta)}{\partial \beta_1} & = \sum_{i=1}^n y_ix_i -\frac{1}{1+e^{\beta_0+\beta_1x_i}} e^{\beta_0+\beta_1x_i}x_i\\
+\frac{\partial L(\beta)}{\partial \beta_1} & = \sum_{i=1}^n y_ix_i -\frac{e^{\beta_0+\beta_1x_i}}{1+e^{\beta_0+\beta_1x_i}} x_i\\
+\frac{\partial L(\beta)}{\partial \beta_1} & = \sum_{i=1}^n y_ix_i -\pi(x_i) x_i\\
+\frac{\partial L(\beta)}{\partial \beta_1} & = \sum_{i=1}^n x_i\left( y_i -\pi(x_i) \right)\\
+& \implies \sum_{i=1}^n x_i\left( y_i -\pi(x_i) \right) = 0 \qquad (4)
+\end{array}
+$$
+
+Las ecuaciones obtenidas no son lineales en los parámetros, por lo tanto hay que recurrir a otros métodos para encontrar valores aproximados $\hat \beta$ de $\beta$.
+
+De la ecuación $(3)$ tenemos:
+$$\sum_{i=1}^n y_i= \sum_{i=1}^n \hat\pi(x_i)$$
+
+Es decir, la suma de los valores observados es igual a la suma de los valores esperados.
+
+Cuando se tienen más de una variable explicativa aplicamos el mismo procedimiento de derivar con respecto a cada parámetro e igularlas a cero, obteniendo $\hat\beta_0,\hat\beta_1,\dots,\hat\beta_p$ de los parámetros $\beta_0,\beta_1,\dots,\beta_p$. En este caso el modelo de regresión logistica estimado queda
 $$
 \hat{y}=\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) = P(Y=1|x_1,x_2,\dots,x_p) = \frac{e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}{1+e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}
 $$
 
 Una vez obtenidos los parámetros estimados podemos calcular la probabilidad cuando las variables independientes toman valores específicos.
 
-### Prueba de significancia
+### Prueba de significancia para los parámetros
 
-En todos los modelos de regresión es importante entender y calcular cual es el nivel de aporte o significancia de cada variable al modelo de regresión. La pregunta es ¿Qué tanto aporta una variable para predecir la variable dependiente?.
+En todos los modelos de regresión es importante entender y calcular cúal es el nivel de aporte o significancia de cada variable al modelo de regresión. La pregunta es ¿Qué tanto aporta una variable para predecir la variable de respuesta?.
 
-Para ello se compara el resultado del modelo de regresión con los parámetros y sin los parámetros. Por otra parte en el caso individual, se prueba el nivel de aporte de una variable específica al modelo de regresión. 
+Para responder esto se predice la variable respuesta con un modelo que tenga la variable explicativa en cuestión y luego se compara con un modelo que no tenga dicha variable explicativa. La función que se usa para comparar depende del problema particular, si el valor de predicción con la variable en el modelo es mejor, predice mejor a la variable respuesta que el modelo sin la variable explicativa en cuestion, entonces nosotros decimos que la variable explicativa estudiada es **significativa**.
 
-En primer término se realiza una prueba de significancia global, es decir, se realiza la prueba de hipótesis siguiente
+En la regresión lineal una prueba para el nivel de significancia de los coeficientes es la tabla de *análisis de varianza*, esta divide la suma total de las desviaciones de las observaciones sobre la media al cuadrado en dos partes:
 
-> $H_0$: $\beta_1=\beta_2=\dots=\beta_p=0$
+- La suma de las desviaciones de las observaciones sobre la regresión lineal al cuadrado ó suma al cuadrado de los residuos $SSE$.
 
-> $H_A$: uno o varios de los parámetros son distintos de cero
+- La suma al cuadrado de los valores de predicción, basados en el modelo de regresión, sobre la media de las variables dependientes o suma al cuadrado de la regresión $SSR$
+
+Si $y_i$ es el valor observado y $\hat y_i$ denota su valor de predicción del individuo $y_i$ dado el modelo, entonces el estadístico usado para hacer la comparación es:
+$$SSE=\sum_{i=1}^n (y_i-\hat y_i)^2$$
+
+Si el modelo no contiene a la variable independiente el único parámetro sería $\beta_0$ y en este caso su estimador es $\hat \beta_0 = \bar y$, es decir la media de la variable respuesta, así $\hat y_i=\bar y$ y $SSE$ sería igual a la suma total al cuadrado. Cuando se incluye a la variable independiente cualquier decrecimiento en $SSE$ se debe al factor del coeficiente de la variable independiente, cuando este es distinto de cero. El cambio en el valor de $SSE$ se debe a la variabilidad de la regresión, que denotaremos por $SSR$, que es: 
+$$SSR=\sum_{i=1}^n (y_i-\bar y)^2 - \sum_{i=1}^n (y_i-\hat y_i)^2$$
+
+Un valor grande en $SSR$ implica que la variable independiente es importante, y uno pequeño implica que no es importante para predecir a la variable de respuesta.
+
+En la regresión logística, la comparación del valor observado con el valor predicho esta basado en el logaritmo de la función de verosimilitud. 
+
+La comparación del valor observado y el predictivo es usando la función de verosimilitud mediante la siguiente expresión:
+$$D=-2ln\left[ \frac{verosimilitud\ con\ el\ modelo\ ajustado}{verosimilitud\ con\ el\ modelo\ saturado}\right]$$
+Donde un modelo saturado es uno que contiene tantos parámetros como valores observados. En el modelo saturado todos los datos son parámetros, entonces:
+$$L(modelo\ saturado)=\prod_{i=1}^n y_i^{y_i}(1-y_i)^{1-y_i}$$
+Como $y_i=0$ ó $y_i=1$ tenemos:
+
+- Si $y_i=0\implies y_i^{y_i}(1-y_i)^{1-y_i}=0^0\times 1^1= 1\times 1=1$
+
+- Si $y_i=1\implies y_i^{y_i}(1-y_i)^{1-y_i}=1^1\times 0^0= 1\times 1=1$
+
+Así concluimos que la verosimilitud del modelo saturado es 1 
+$$L(modelo\ saturado)=1$$
+
+Por lo tanto 
+$$
+\begin{array}{rl}
+D & =-2ln\left[ \frac{verosimilitud\ con\ el\ modelo\ ajustado}{1}\right]\\
+D & =-2ln(verosimilitud\ con\ el\ modelo\ ajustado)\\
+D & = -2\sum_{i=1}^n  y_i ln\left(\frac{\hat\pi(x_i)}{y_i}\right)+(1-y_i)ln\left( \frac{1+\hat\pi(x_i)}{1-y_i}\right)
+\end{array}
+$$
+
+A este estadístico se le llama la **desvianza**.
+
+En particular si queremos saber el nivel de significancia de una variable independiente comparamos el valor del estadístico $D$ con y sin la variable independiente
+$$G=D(\text{modelo sin la variable})-D(\text{modelo con la variable})$$
+
+Como en ambos estadísticos se tiene la verosimilitud del modelo saturado tenemos que:
+$$G=-2ln\left(\frac{\text{modelo sin la variable}}{\text{modelo con la variable}} \right)$$
 
 #### Prueba de hipótesis global
 
@@ -343,9 +495,6 @@ $$
 $$
 \displaystyle\frac{e^{g(x_1+\dots+x_p)}}{1+e^{g(x_1+\dots+x_p)}}=\frac{e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}{1+e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}
 $$
-
-
-## Marco Teórico
 
 
 
