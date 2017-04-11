@@ -424,7 +424,7 @@ D & = -2\sum_{i=1}^n  y_i ln\left(\frac{\hat\pi(x_i)}{y_i}\right)+(1-y_i)ln\left
 \end{array}
 $$
 
-A este estadístico se le llama la **desvianza**.
+A este estadístico se le llama la **desvianza**. Tiene una distribución asintótica como la Chi Cuadrado. 
 
 En particular si queremos saber el nivel de significancia de una variable independiente comparamos el valor del estadístico $D$ con y sin la variable independiente
 $$G=D(\text{modelo sin la variable})-D(\text{modelo con la variable})$$
