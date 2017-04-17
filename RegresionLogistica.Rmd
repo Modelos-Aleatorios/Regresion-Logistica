@@ -212,7 +212,7 @@ $$ln\left(\frac{p_i}{1-p_i}\right)=ln(e^{\beta_0+\beta_1X_i})=\beta_0+\beta_1X_i
 La función $ln\left(\frac{p_i}{1-p_i}\right)$ es llamada $logit$ de $p_i$, se denota
 $$
 \begin{array}{rl}
-logit(pi) & = \beta_0+\beta_1X_i\\
+logit(p_i) & = \beta_0+\beta_1X_i\\
 & = ln(p_i)- ln(1-p_i)
 \end{array}
 $$
