@@ -3,11 +3,8 @@ title: "Regresión Logística"
 author: "Alexander A. Ramírez M. (alexanderramirez.me) y Daysi Febles (daysilorenafeblesr@gmail.com)"
 date: "27/3/2017"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: 3
-  html_document: 
-    toc: yes
+  pdf_document: default
+  html_document: default
 fontsize: 12pt
 ---
 
@@ -17,8 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages('latex2exp')
 library(latex2exp)
 ```
-
-# Regresión Logística
 
 ## Marco Teórico
 
@@ -87,12 +82,12 @@ Así
 $$
 \begin{array}{rl}
 Var(\epsilon_i) & = E(\epsilon_i^2)- E(\epsilon_i)^2\\
- & = E(\epsilon_i^2)\\
- & = (1 -p_i)^2P(\epsilon_i=(1 -p_i)^2)+p_i^2P(\epsilon_i=p_i^2)\\
- & = (1 -p_i)^2p_i+p_i^2(1-p_i)\\
- & = (1 -p_i)((1 -p_i)p_i+p_i^2)\\
- & = (1 -p_i)(p_i-p_i^2+p_i^2)\\
- & = (1 -p_i)p_i\\
+Var(\epsilon_i) & = E(\epsilon_i^2)\\
+Var(\epsilon_i) & = (1 -p_i)^2P(\epsilon_i=(1 -p_i)^2)+p_i^2P(\epsilon_i=p_i^2)\\
+Var(\epsilon_i) & = (1 -p_i)^2p_i+p_i^2(1-p_i)\\
+Var(\epsilon_i) & = (1 -p_i)((1 -p_i)p_i+p_i^2)\\
+Var(\epsilon_i) & = (1 -p_i)(p_i-p_i^2+p_i^2)\\
+Var(\epsilon_i) & = (1 -p_i)p_i\\
 Var(\epsilon_i) & = (1 -(\beta_0+\beta_1X_i))(\beta_0+\beta_1X_i)
 \end{array}
 $$
@@ -126,7 +121,7 @@ A continuación utilizaremos el modelo logístico, veremos todas sus propiedades
 Comenzaremos observando el gráfico de $g(x)=\frac{1}{1+e^{-x}}$
 
 ```{r}
-x<-seq(-8,8,by=0.01)
+x<-seq(-8,8,1)
 y<-1/(1+exp(-x))
 plot(x,y, main = TeX('Gráfico de $g(x)=\\frac{1}{1+e^{-x}}$'),
      xlab = TeX('x'),ylab = TeX('$g(x)$'), type="l",col="blue")
@@ -212,14 +207,14 @@ $$ln\left(\frac{p_i}{1-p_i}\right)=ln(e^{\beta_0+\beta_1X_i})=\beta_0+\beta_1X_i
 La función $ln\left(\frac{p_i}{1-p_i}\right)$ es llamada $logit$ de $p_i$, se denota
 $$
 \begin{array}{rl}
-logit(p_i) & = \beta_0+\beta_1X_i\\
+logit(pi) & = \beta_0+\beta_1X_i\\
 & = ln(p_i)- ln(1-p_i)
 \end{array}
 $$
 
 De donde notamos que la variable $logit(p_i)$ mide la diferencia entre las probabilidades de éxito ($p_i$) y fracaso ($1-p_i$) en escala logaritmica.
 
-## Modelo de Regresión Logística
+### Modelo de Regresión Logística
 
 Acabamos de ver la relación que hay entre el modelo de regresión logística y el modelo de regresión lineal. Como conclusión podemos decir que el modelo de regresión logistica consiste en una variable dependiente (explicada) usualmente denotada por $Y$ y una o varias variables independientes denotadas por $X_i$.
 $$
@@ -248,14 +243,16 @@ $$
 \pi(x)= \frac{e^{-7+3x}}{1+e^{-7+3x}}
 $$
 
-El gráfico es el siguiente:
+Donde el gráfico es:
 ```{r}
+E_y<-c()
 beta0<- -7
 beta1<- 3
-x<-seq(0,5,by=0.01)
-p_i<-exp(beta0+beta1*x)
-E_y<-p_i/(1+p_i)
-plot(x,E_y, type = "l", 
+for(x in seq(0,5,by=0.01)) {
+  p_i<-exp(beta0+beta1*x)
+  E_y<-c(E_y, p_i/(1+p_i))
+}
+plot(seq(0,5,by=0.01),E_y, type = "l", 
      xlab = TeX('$x$'), 
      ylab = TeX('$E(Y=1 | x)$'), 
      main = TeX('Regresión Logística $\\beta_0= -7$ y $\\beta_1= 3$'))
@@ -265,11 +262,11 @@ Aplicandole la transformación $logit$ al cociente de probabilidad $\frac{\pi(x)
 $$
 \begin{array}{rl}
 g(x) & = ln\left(\frac{\pi(x)}{1-\pi(x)}\right)\\
- & = ln(\pi(x))-ln(1-\pi(x))\\
- & = ln\left(\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}} \right) - ln\left(1-\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}} \right)\\
- & = ln(e^{\beta_0+\beta_1x}) - ln(1+e^{\beta_0+\beta_1x}) -ln\left(\frac{1}{1+e^{\beta_0+\beta_1x}}\right)\\
- & = ln(e^{\beta_0+\beta_1x}) - ln(1+e^{\beta_0+\beta_1x}) -ln(1) +ln(1+e^{\beta_0+\beta_1x})\\
- & = ln(e^{\beta_0+\beta_1x})\\
+g(x) & = ln(\pi(x))-ln(1-\pi(x))\\
+g(x) & = ln\left(\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}} \right) - ln\left(1-\frac{e^{\beta_0+\beta_1x}}{1+e^{\beta_0+\beta_1x}} \right)\\
+g(x) & = ln(e^{\beta_0+\beta_1x}) - ln(1+e^{\beta_0+\beta_1x}) -ln\left(\frac{1}{1+e^{\beta_0+\beta_1x}}\right)\\
+g(x) & = ln(e^{\beta_0+\beta_1x}) - ln(1+e^{\beta_0+\beta_1x}) -ln(1) +ln(1+e^{\beta_0+\beta_1x})\\
+g(x) & = ln(e^{\beta_0+\beta_1x})\\
 g(x) & = \beta_0+\beta_1x\\
 \end{array}
 $$
@@ -297,16 +294,16 @@ y la varianza es
 $$
 \begin{array}{rl}
 Var(\epsilon) & = \mathbb{E}(\epsilon^2)-\mathbb{E}(\epsilon)^2=\mathbb{E}(\epsilon^2)\\
- & = (1-\pi(x))^2 P(\epsilon^2=(1-\pi(x))^2)+\pi(x)^2P(\epsilon^2=\pi(x)^2)\\
- & = (1-\pi(x))^2 \pi(x)+\pi(x)^2 (1-\pi(x))\\
- & = (1-\pi(x))((1-\pi(x)) \pi(x)+\pi(x)^2)\\
- & = (1-\pi(x))(\pi(x)-\pi(x)^2+\pi(x)^2)\\
+Var(\epsilon) & = (1-\pi(x))^2 P(\epsilon^2=(1-\pi(x))^2)+\pi(x)^2P(\epsilon^2=\pi(x)^2)\\
+Var(\epsilon) & = (1-\pi(x))^2 \pi(x)+\pi(x)^2 (1-\pi(x))\\
+Var(\epsilon) & = (1-\pi(x))((1-\pi(x)) \pi(x)+\pi(x)^2)\\
+Var(\epsilon) & = (1-\pi(x))(\pi(x)-\pi(x)^2+\pi(x)^2)\\
 Var(\epsilon) & = (1-\pi(x))\pi(x)\\
 \end{array}
 $$
 Entonces tenemos que los errores se distribuyen Binomiales, y por lo tanto la variable de respuesta tiene una distribución Binomial.
 
-## Ajuste del modelos de regresión logística
+### Ajuste del modelos de regresión logística
 
 Tenemos que encontrar los parámetros desconocidos $\beta_0$ y $\beta_1$, el método más usado para estimarlos es el de mínimos cuadrados. En los modelos de regresión lineal la manera de calcular estos parámetos es maximizando la función de máxima verosimilitud (esta función expresa la probabilidad de los datos observados como una función de parámetros desconocidos). En el caso de los modelos de regresión logística tenemos:
 
@@ -383,7 +380,7 @@ $$
 
 Una vez obtenidos los parámetros estimados podemos calcular la probabilidad cuando las variables independientes toman valores específicos.
 
-## Prueba de significancia para los parámetros
+### Prueba de significancia para los parámetros
 
 En todos los modelos de regresión es importante entender y calcular cúal es el nivel de aporte o significancia de cada variable al modelo de regresión. La pregunta es ¿Qué tanto aporta una variable para predecir la variable de respuesta?.
 
@@ -433,15 +430,89 @@ En particular si queremos saber el nivel de significancia de una variable indepe
 $$G=D(\text{modelo sin la variable})-D(\text{modelo con la variable})$$
 
 Como en ambos estadísticos se tiene la verosimilitud del modelo saturado tenemos que:
-$$G=-2ln\left(\frac{\text{modelo sin la variable}}{\text{modelo con la variable}} \right)$$
+$$
+\begin{array}{rl}
+G & = -2ln(\text{verosimilitud sin la variable})+2ln(\text{verosimilitud con la variable})\\
+G & = -2[ ln(\text{verosimilitud sin la variable})-ln(\text{verosimilitud con la variable})]\\
+G & = -2ln\left(\frac{\text{modelo sin la variable}}{\text{modelo con la variable}} \right)
+\end{array}
+$$ 
 
-### Prueba de hipótesis global
+Veamos el caso de una variable independiente, la forma que tiene el estimador de máxima verosimilitud es:
+$$
+\begin{array}{rl}
+L(\beta_0) & = \sum_{i=1}^n  y_i ln\left( \frac{\pi(x_i)}{1-\pi(x_i)} \right)+ln(1-\pi(x_i))\\
+L(\beta_0) & = \sum_{i=1}^n  y_i (\beta_0)+ln\left(\frac{1}{1+e^{\beta_0}}\right)\\
+L(\beta_0) & = \sum_{i=1}^n  y_i (\beta_0)+ln(1)-ln(1+e^{\beta_0})\\
+L(\beta_0) & = \sum_{i=1}^n  y_i (\beta_0)-ln(1+e^{\beta_0})
+\end{array}
+$$
+
+Así el estimador $\hat \beta_0$ quedaría
+$$
+\begin{array}{rl}
+\frac{\partial L(\beta_0)}{\partial \beta_0} & = \frac{\partial}{\partial \beta_0} \sum_{i=1}^n  y_i \beta_0-ln(1+e^{\beta_0})\\
+\frac{\partial L(\beta_0)}{\partial \beta_0} & = \sum_{i=1}^n  y_i -\frac{1}{1+e^{\beta_0}}e^{\beta_0}=0\\
+& \implies \frac{\sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0}}{1+e^{\beta_0}}=0\\
+& \sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0} =0\\
+& \sum_{i=1}^n  y_i+y_ie^{\beta_0}-e^{\beta_0} =0\\
+& \sum_{i=1}^n  y_i+e^{\beta_0}(y_i-1) =0\\
+& \sum_{i=1}^n  y_i+e^{\beta_0}\sum_{i=1}^n(y_i-1) =0\\
+& \implies e^{\hat \beta_0}= \frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\\
+& \implies \hat \beta_0 = ln \left( \frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\right)=ln \left( \frac{\sum_{i=1}^n  y_i}{\sum_{i=1}^n(1-y_i)}\right)\\
+\end{array}
+$$
+
+Sustituyendo en el modelo $\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i}$ tenemos:
+$$
+\begin{array}{rl}
+\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} & = \left( \frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}} \right)^{y_i}\left(1-\frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}}\right)^{1-y_i}\\
+& = \left( \frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}} \right)^{y_i}\left(\frac{1}{1+e^{\hat \beta_0}}\right)^{1-y_i}\\
+& = \left( \frac{\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}{1+\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\frac{1}{1+\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i}\\
+& = \left( \frac{\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}{\frac{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\frac{1}{\frac{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i}\\
+& = \left( \frac{-\sum_{i=1}^n y_i}{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i} \right)^{y_i}\left(\frac{\sum_{i=1}^n(y_i-1)}{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}\right)^{1-y_i}\\
+& = \left( \frac{-\sum_{i=1}^n y_i}{-n} \right)^{y_i}\left(\frac{\sum_{i=1}^n(y_i-1)}{-n}\right)^{1-y_i}\\
+& = \left( \frac{\sum_{i=1}^n y_i}{n} \right)^{y_i}\left(-\frac{\sum_{i=1}^n(y_i-1)}{n}\right)^{1-y_i}\\
+& = \left( \frac{\sum_{i=1}^n y_i}{n} \right)^{y_i}\left(\frac{\sum_{i=1}^n(1-y_i)}{n}\right)^{1-y_i}\\
+\end{array}
+$$
+Si $n_1=\sum_{i=1}^n y_i$ y $n_0=\sum_{i=1}^n 1- y_i$
+$$\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} = \left( \frac{n_1}{n} \right)^{y_i}\left(\frac{n_0}{n}\right)^{1-y_i}
+$$
+
+Por lo tanto, la verosimilitud del modelo sin la variable es:
+$$
+\begin{array}{rl}
+l(\beta) & =  ln(\prod_{i=1}^n \left( \frac{n_1}{n} \right)^{y_i}\left(\frac{n_0}{n}\right)^{1-y_i})\\
+l(\beta) & =  ln( \left( \frac{n_1}{n} \right)^{\sum_{i=1}^n y_i}\left(\frac{n_0}{n}\right)^{\sum_{i=1}^n 1-y_i})\\
+l(\beta) & =  ln( \left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0})\\
+\end{array}
+$$
+
+Sustituyendo esto, y la verosimilitud de un modelo con una variable, tenemos:
+$$G = -2ln\left(\frac{\left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}}{\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}} \right)$$ 
+
+Otra forma de escribir esto es:
+$$
+\begin{array}{rl}
+G & = -2ln\left(\left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}\right) +2ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}} \right)\\
+G & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - ln\left(\left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}\right) \right)\\
+G & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln\left( \frac{n_1}{n} \right)+ n_0 ln \left(\frac{n_0}{n}\right)] \right)\\
+G & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-n_1ln(n) + n_0 ln(n_0) - n_0 ln(n)] \right)\\
+G & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-ln(n)(n_1+n_0) + n_0 ln(n_0)] \right)\\
+G & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-nln(n) + n_0 ln(n_0)] \right)\\
+\end{array}
+$$ 
+
+Bajo la hipótesis nula que $\beta_1$ es igual a 0, el estadístico $G$ sigue una distribución Chi-Cuadrado con 1 grado de libertad $\chi^2_1$. El $p-valor$ asociado a esta prueba es de la forma $P(\chi^2_1 > G)< \alpha$, donde $\alpha$ es el nivel de significancia.
+
+#### Prueba de hipótesis global
 
 Para probar si los 
 
-### Prueba de hipótesis por variable
+#### Prueba de hipótesis por variable
 
-## Cociente de verosimilitudes
+### Cociente de verosimilitudes
 
 La verosimilitud de un evento se define como la razón entre la probabilidad de que el evento sea exitoso (ocurra) y la probabilidad de que el evento falle (no ocurra).
 
@@ -477,7 +548,7 @@ $$
 
 Finalmente, el cociente de verosimilitud permite calcular y comparar la verosimilitud de dos eventos diferentes. Si la verosimilitud es igual a $1$ indica que los dos eventos tienen la misma verosimilitud, si por otra parte la variable independiente es significativa y tiene efecto positivo sobre la probabilidad de que el evento ocurra, el cociente de verosimilitud debe ser mayor que $1$.
 
-## Transformación *logit*
+### Transformación *logit*
 
 $$
 \ln(V)=\beta_0+\beta_1x_1+\dots+\beta_px_p
