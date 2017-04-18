@@ -1,0 +1,170 @@
+---
+title: "Regresión Logística - Ejercicio"
+author: "Alexander A. Ramírez M. (alexanderramirez.me)"
+date: "27/3/2017"
+output:
+  pdf_document: default
+  html_document: default
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#https://github.com/stefano-meschiari/latex2exp
+#install.packages('latex2exp')
+library(latex2exp)
+```
+
+
+## Ejercicio[^1]
+
+En los datos **ICU** la variable dependiente es el estado vital (**vital status**) al momento de ser dado de alta, **STA**. Los doctores relacionados con el estudio piensan que el factor clave de sobrevivencia fué la edad del paciente al momento de admisión, **AGE**.
+
+```{r}
+data.filename<-"data/icu.dat"
+#readLines(data.filename, n=10)
+icu.table<-read.table(data.filename, header=FALSE)
+colnames(icu.table)<-c("ID", "STA", "AGE", "SEX", "RACE", "SER", 
+                       "CAN", "CRN", "INF", "CPR", "SYS", "HRA", 
+                       "PRE", "TYP", "FRA", "PO2", "PH", "PCO", 
+                       "BIC", "CRE", "LOC")
+icu<-as.data.frame(icu.table)
+```
+
+A continuación la leyenda del conjunto de datos **ICU**.
+
+| Variable |	Description	|	Codes/Values  | Name
+|----------|--------------|---------------|---------
+| 1	|	Identification Code	| ID Number		  |	ID
+| 2	|	Vital Status	|	0 = Lived,1= Died	|	STA
+| 3	|	Age	|		Years			|	AGE
+| 4	|	Sex	|		0 = Male1 = Female	|	SEX
+| 5	|	Race	|		1 = White, 2= Black, 3 = Other	| RACE
+| 6	|	Service at ICU Admission | 	0 = Medical, 1 = Surgical	| SER
+| 7	|	Cancer Part of Present Problem	 | 0 = No, 1 = Yes		|	CAN
+| 8	|	History of Chronic Renal Failure |	0 = No, 1 = Yes		|	CRN
+| 9	|	Infection Probable at ICU Admission |	0 = No, 1 = Yes		|	INF
+| 10	|	CPR Prior to ICU Admission |	0 = No, 1 = Yes		|	CPR
+| 11	|	Systolic Blood Pressure	at ICU Admission | mm Hg			|	SYS
+| 12	|	Heart Rate at ICU Admission |	Beats/min		|	HRA
+| 13	|	Previous Admission to an ICU Within 6 Months |	0 = No, 1 = Yes		|	PRE
+| 14	|	Type of Admission |	0 = Elective, 1 = Emergency	| TYP
+| 15	|	Long Bone, Multiple, Neck, Single Area, or Hip Fracture |	0 = No, 1 = Yes		|	FRA
+| 16	|	PO2 from Initial Blood Gases |	0 = >60, 1 = <= 60	|	PO2
+| 17	|	PH from Initial Blood Gases |	0 = >= 7.25 1 = < 7.25	|	PH
+| 18	|	PCO2 from Initial Blood Gases |	0 = <=45, 1 > 45 	|	PCO
+| 19 	|	Bicarbonate from Initial Blood Gases |	0 = >=18, 1 <18	|		BIC
+| 20 	|	Creatinine from Initial Blood Gases |	0 = <=2, 1 >2		|	CRE
+| 21	|	Level of Consciousness at ICU Admission | 0 = No Coma or Deep Stupor,	1 = Deep Stupor, 2= Coma | LOC
+	
+Para los propósitos del ejercicio vamos a trabajar con dos variables del conjunto de datos **AGE** como variable independiente y **STA** como variable dependiente.
+
+Ahora vamos a construir la matriz con la cual vamos a trabajar en el ejercicio. Sólo necesitamos **AGE** y **STA**.
+
+```{r}
+icu.reduced<-cbind(icu$STA, icu$AGE)
+colnames(icu.reduced)<-c("STA", "AGE")
+```
+
+Adicionalmente vamos a ordenar los datos en base a la edad (**AGE**) y la convertimos en un `data.frame` para manipular más fácilmente.
+
+```{r}
+icu.reduced<-icu.reduced[order(icu.reduced[,"AGE"]),]
+icu.reduced<-as.data.frame(icu.reduced)
+head(icu.reduced)
+```
+
+a)
+
+- Escriba la ecuación para el modelo de regresión logística de **STA** y **AGE**.
+
+$$
+\mathbb{E}[STA|AGE]=P(STA=1|AGE)=\pi(AGE) = \frac{e^{\beta_0+\beta_1 AGE}}{1+e^{\beta_0+\beta_1 AGE}}
+$$
+
+- Escriba la ecuación de la transformación *logit* de este modelo de regresión logística.
+
+Sea $p_i=\displaystyle\frac{1}{1+e^{-g(x)}}$ si $g(x)=\beta_0+\beta_1x$
+
+$$
+\begin{array}{rl}
+logit(p_i) &= ln\Big(\frac{p_i}{1-p_i}\Big) \\
+&= \\
+&= \beta_0+\beta_1x
+\end{array}
+$$
+
+Donde en nuestro caso $x=AGE$ por lo cual
+
+$$
+logit(p_i)=\beta_0+\beta_1 AGE
+$$
+
+- ¿Qué características de la variable respuesta (explicada/dependiente), **STA**, nos induce a considerar un modelo de regresión logística en lugar del modelo de regresión lineal para describir la relación entre **STA** y **AGE**.
+
+b)
+
+- Haga un gráfico (nube de puntos) de **STA** versus **AGE**.
+
+c)
+
+- Utilizando los intervalos $[15, 24], [25, 34], [35, 44], [45, 54], [55, 64], [65, 74], [75, 84], [85, 94]$ para **AGE**, calcule la media de **STA** para todos los individuos de la muestra cuyas edades pertenecen a los intervalos definidos en **AGE**.
+
+- Dibuje los valores de la media de **STA** versus el punto medio del intervalo de **AGE** correspondiente, utilizando los mismos ejes utilizados en b)
+
+d)
+
+- Escriba una expresión para la verosimilitud y el logaritmo de la verosimilitud para el modelo de regresión logística utilizando los datos no agrupados, $n=200$.
+
+- Obtenga la expresión para las dos ecuaciones de verosimilitud.
+
+
+e)
+
+- Utilizando el paquete de regresión logística de su preferencia obtenga los estimadores de máxima verosimilitud de los parámetros del modelo de regresión logística basado en **STA** y **AGE**. Estos estimadores deben estar basados en los datos no agrupados, $n=200$. 
+
+- Utilizando los parámetros estimados escriba la ecuación de los valores ajustados, es decir, las probabilidades logísticas estimadas.
+
+- Haga un gráfico de la ecuación de los valores ajustados en los ejes utilizados en el gráfico realizado en b) y c).
+
+
+f)
+
+- Resuma los resultados de acuerdo a los gráficos obtenidos de los ejercicios b), c) y e).
+
+g)
+
+- Usando los resultados de la regresión logística aplicada a los datos en e), verifique la significancia del coeficiente para **AGE** utilizando la prueba de razones de verosimilitudes, la prueba de Wald y, si es posible, la prueba de Score.
+
+- ¿Qué premisas son necesarias para calcular los $p$-valores para que cada una de estas pruebas de hipótesis sean válidas?
+
+- ¿Los resultados de estas pruebas son consistentes entre ellos?
+
+- ¿Cual es el valor de la devianza para el modelo ajustado?
+
+
+h)
+
+- Utilizando los resultados del ejercicio e) calcule el intervalo de confianza con un nivel de $95\%$ para el término constante $\hat\beta_0$ y para la pendiente (parámetro $\hat\beta_1$).
+
+- Interprete el intervalo de confianza para la pendiente (parámetro $\hat\beta_1$).
+
+i)
+
+- Obtenga la matriz de covarianza estimada para el modelo ajustado en e).
+
+- Calcule el *logit* y la probabilidad logística estimada para un individuo de $60$ años.
+
+- Calcule el intervalo de confianza con un nivel de $95\%$ para la transformación *logit* y la probabilidad logística estimada.
+
+- Escriba una interpretación de la probabilidad estimada y su intervalo de confianza.
+
+j)
+
+- Realice la regresión logística para obtener el *logit* estimado y su error estándar para cada sujeto en el estudio **ICU**.
+
+- Grafique el *logit* estimado y los intervalos de confianza puntuales con un nivel de $95\%$ contra **AGE** para cada individuo.
+
+- Explique las similitudes y diferencias entre la apariencia de este gráfico y el gráfico del modelo de regresión lineal ajustado y los intervalos de confianza puntuales con un nivel de $95\%$.
+
+[^1]: Applied Logistic Regression, 2nd Edition, David W. Hosmer, Stanley Lemeshow, Pag. 1-30, 2000, Wiley Series in Probability and Statistics.
