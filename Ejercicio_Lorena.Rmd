@@ -1,6 +1,6 @@
 ---
 title: "Regresión Logística - Ejercicio"
-author: "Alexander A. Ramírez M. (alexanderramirez.me)"
+author: "Daysi Febles (daysilorenafeblesr@gmail.com)"
 date: "24/4/2017"
 output:
   pdf_document: default
@@ -15,20 +15,20 @@ knitr::opts_chunk$set(echo = TRUE)
 library(latex2exp)
 ```
 
-
-## Ejercicio[^1]
+# Ejercicio[^1]
 
 En los datos **ICU** la variable dependiente es el estado vital (**vital status**) al momento de ser dado de alta, **STA**. Los doctores relacionados con el estudio piensan que el factor clave de sobrevivencia fué la edad del paciente al momento de admisión, **AGE**.
 
+Cargaremos los datos:
 ```{r}
 data.filename<-"data/icu.dat"
-#readLines(data.filename, n=10)
-icu.table<-read.table(data.filename, header=FALSE)
-colnames(icu.table)<-c("ID", "STA", "AGE", "SEX", "RACE", "SER", 
-                       "CAN", "CRN", "INF", "CPR", "SYS", "HRA", 
-                       "PRE", "TYP", "FRA", "PO2", "PH", "PCO", 
-                       "BIC", "CRE", "LOC")
-icu<-as.data.frame(icu.table)
+
+table<-read.table(data.filename, header=FALSE)
+colnames(table)<-c("ID", "STA", "AGE", "SEX", "RACE", "SER", 
+                   "CAN", "CRN", "INF", "CPR", "SYS", "HRA", 
+                   "PRE", "TYP", "FRA", "PO2", "PH", "PCO", 
+                   "BIC", "CRE", "LOC")
+icu<-as.data.frame(table)
 ```
 
 A continuación la leyenda del conjunto de datos **ICU**.
@@ -62,55 +62,89 @@ Para los propósitos del ejercicio vamos a trabajar con dos variables del conjun
 Ahora vamos a construir la matriz con la cual vamos a trabajar en el ejercicio. Sólo necesitamos **AGE** y **STA**.
 
 ```{r}
-icu.reduced<-cbind(icu$STA, icu$AGE)
-colnames(icu.reduced)<-c("STA", "AGE")
-```
-
-Adicionalmente vamos a ordenar los datos en base a la edad (**AGE**) y la convertimos en un `data.frame` para manipular más fácilmente.
-
-```{r}
-icu.reduced<-icu.reduced[order(icu.reduced[,"AGE"]),]
-icu.reduced<-as.data.frame(icu.reduced)
-head(icu.reduced)
+StaAge<-data.frame(icu$STA, icu$AGE)
+colnames(StaAge)<-c("STA", "AGE")
+head(StaAge)
 ```
 
 a)
 
 - Escriba la ecuación para el modelo de regresión logística de **STA** y **AGE**.
-
-$$
-\mathbb{E}[STA|AGE]=P(STA=1|AGE)=\pi(AGE) = \frac{e^{\beta_0+\beta_1 AGE}}{1+e^{\beta_0+\beta_1 AGE}}
-$$
+$$\mathbb{E}[STA|AGE]=P(STA=1|AGE)=\pi(AGE) = \frac{e^{\beta_0+\beta_1 AGE}}{1+e^{\beta_0+\beta_1 AGE}}$$
 
 - Escriba la ecuación de la transformación *logit* de este modelo de regresión logística.
 
-Sea $p_i=\displaystyle\frac{1}{1+e^{-g(x)}}$ si $g(x)=\beta_0+\beta_1x$
+En este caso la variable independiente es $AGE$. Recordemos que 
+$$p_i=\frac{e^{\beta_0+\beta_1AGE_i}}{1+e^{\beta_0+\beta_1AGE_i}}$$
 
+Por lo tanto 
 $$
 \begin{array}{rl}
-logit(p_i) &= ln\Big(\frac{p_i}{1-p_i}\Big) \\
-&= \\
-&= \beta_0+\beta_1x
+logit(pi) & = \beta_0+\beta_1AGE_i\\
+& = ln(p_i)- ln(1-p_i)
 \end{array}
-$$
-
-Donde en nuestro caso $x=AGE$ por lo cual
-
-$$
-logit(p_i)=\beta_0+\beta_1 AGE
 $$
 
 - ¿Qué características de la variable respuesta (explicada/dependiente), **STA**, nos induce a considerar un modelo de regresión logística en lugar del modelo de regresión lineal para describir la relación entre **STA** y **AGE**.
 
-b)
+La principal característica para pensar en un modelo de regresión logística es que la variable dependiente $STA$ es discreta y solo toma dos valores que son 0 y 1 (es docotómica). En el caso de la regresión lineal esta variable puede tomar cualquier valor entre $-\infty$ y $\infty$.
 
+b)
 - Haga un gráfico (nube de puntos) de **STA** versus **AGE**.
+
+```{r}
+plot(StaAge$AGE, StaAge$STA, main = "STA vs AGE", xlab = "AGE-AÑOS",
+     ylab = "STA-ESTADO DEL PACIENTE")
+```
+
+En esté grafico la variable **STA** solo toma dos valores 0 si el paciente esta vivo y 1 si esta muerto. 
 
 c)
 
 - Utilizando los intervalos $[15, 24], [25, 34], [35, 44], [45, 54], [55, 64], [65, 74], [75, 84], [85, 94]$ para **AGE**, calcule la media de **STA** para todos los individuos de la muestra cuyas edades pertenecen a los intervalos definidos en **AGE**.
 
+```{r}
+inf <- 15
+sup <- 24
+suma<-c()
+indint<-c()
+pntmed<-c()
+m<-length(StaAge$AGE)
+
+for(i in 1:8)
+{
+  pntmed[i]<-(sup+inf)/2
+  sum<-0
+  ind<-0
+  for(j in 1:m)
+  { 
+    if(inf<=StaAge$AGE[j])
+    {
+      if(StaAge$AGE[j]<=sup)
+      {
+        ind<-ind+1
+        if(StaAge$STA[j]==1)
+        { sum<-sum+1}
+      }  
+    }
+  }
+  indint[i]<-ind
+  suma[i]<-sum
+  inf<-inf+10;
+  sup<-sup+10;
+}
+
+indint#Cantidad de Individuos por intervalos
+suma #Cantidad de individuos vivos por intervalo
+```
+
 - Dibuje los valores de la media de **STA** versus el punto medio del intervalo de **AGE** correspondiente, utilizando los mismos ejes utilizados en b)
+
+```{r}
+x<-pntmed #Puntos medios
+y<-suma/indint #Media por intervalo
+plot(x,y)
+```
 
 d)
 

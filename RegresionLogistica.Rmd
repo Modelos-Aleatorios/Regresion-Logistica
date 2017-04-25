@@ -1,7 +1,7 @@
 ---
 title: "Regresión Logística"
 author: "Alexander A. Ramírez M. (alexanderramirez.me) y Daysi Febles (daysilorenafeblesr@gmail.com)"
-date: "27/3/2017"
+date: "24/4/2017"
 output:
   pdf_document: default
   html_document: default
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(latex2exp)
 ```
 
-## Marco Teórico
+# Marco Teórico
 
 Para predecir el comportamiento de una variable que depende de otras variables es usual la aplicación de los métodos de regresión. Entre ellos el más popular es la regresión lineal. El proceso consiste en encontrar los parámetros de una función lineal (una recta en este caso) que mejor se ajusta a los datos (con la menor distancia). El criterio para encontrar la mejor, básicamente, consiste en minimizar los errores y para ellos se utiliza el método de mínimos cuadrados.
 
@@ -27,11 +27,11 @@ Comenzaremos ajustando un modelo de regresión lineal simple cuando tenemos una 
 $$Y=\beta_0 + \beta_1X+\epsilon$$
 $$\epsilon \sim \mathcal{N}(0,\sigma)$$
 
-Como la variable respuesta es binaria (toma valor 0 o 1) diremos que es una variable aleatoria Bernoulli y con respecto a la $X$ es una variable observada, sus valores son conocidos. Asumiremos que tenemos $n$ elementos de ambas $(x_i,y_i)$ con $i=1,2,...,n$. $\epsilon$ representara el error aleatorio.
+Como la variable respuesta es binaria (toma valor 0 o 1) diremos que es una variable aleatoria Bernoulli y con respecto a la $X$ es una variable observada, sus valores son conocidos. Asumiremos que tenemos $n$ elementos de ambas $(x_i,y_i)$ con $i=1,2,...,n$. Y supongamos que $\epsilon$ representara el error aleatorio.
 
 Observemos los inconvenientes de este modelo:
 
-- Cuando calculamos la esperanza del modelo tenemos
+- Cuando calculamos **la esperanza del modelo** tenemos
 $$
 \begin{array}{rl}
 E(Y_i) & = E(\beta_0 + \beta_1X_i+\epsilon_i)\\
@@ -41,17 +41,17 @@ E(Y_i) & = \beta_0 + \beta_1X_i
 $$
 
 Si escribimos el modelo como $\beta_0 + \beta_1X_i=p_i$ donde $p_i=P(Y_i=1)$
-$$Y_i= \left \{ \begin{matrix} 1 \  \mbox{con probabilidad} \ p_i\\ 0 \ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.$$
+$$Y_i= \left \{ \begin{matrix} 1 & \text{con probabilidad} &  p_i\\ 0 & \text{con probabilidad} & 1-p_i  \end{matrix} \right.$$
 
 Así este modelo estimaría la probabilidad de que ocurra el evento $Y_i$. Como $p_i$ es una probabilidad su valor deberia estar entre 0 y 1 $(0\le p_i\le 1)$ para todo $i$. Pero como $X_i$, $\beta_0$ y $\beta_1$ pueden tomar cualquier valor entre $(-\infty,\infty)$ el modelo de regresión lineal no garantiza que siempre de un valor entre cero y uno.
 
-- La variable de respuesta solo toma los valores cero y uno, ahora si conocemos la variable explicativa $X$ tenemos que:
+- **Valores que toma el error**: La variable de respuesta solo toma los valores cero y uno, ahora si conocemos la variable explicativa $X$ tenemos
 $$
 \begin{array}{rl}
 \epsilon_i & = Y_i-\beta_0+\beta_1X_i\\
-\epsilon_i & = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ p_i \\ 0 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ 1-p_i \end{matrix} \right.\\
-\epsilon_i & = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ p_i \\ -(\beta_0+\beta_1X_i)\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
-\epsilon_i & = \left \{ \begin{matrix} 1 -p_i\ \mbox{con probabilidad} \ p_i \\ -p_i\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.
+\epsilon_i & = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i) & \text{con probabilidad} & p_i \\ 0 -(\beta_0+\beta_1X_i)& \text{con probabilidad} & 1-p_i \end{matrix} \right.\\
+\epsilon_i & = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i) & \text{con probabilidad} & p_i \\ -(\beta_0+\beta_1X_i) & \text{con probabilidad} & 1-p_i  \end{matrix} \right.\\
+\epsilon_i & = \left \{ \begin{matrix} 1 -p_i & \text{con probabilidad} & p_i \\ -p_i & \text{con probabilidad} & 1-p_i  \end{matrix} \right.
 \end{array}
 $$
 
@@ -68,7 +68,7 @@ $$
 
 Aunque la esperanza de esta variable es cero, no cumple con el supuesto de normalidad de los errores, ya que toma valores discretos. Esto nos llevaría a estimadores poco eficientes.
 
-- Varianza de los errores:
+- **Varianza de los errores**:
 
 Para el cálculo de la varianza de los errores tenemos que definir primero $\epsilon_i^2$
 $$
@@ -94,6 +94,8 @@ $$
 
 También contradice la hipótesis de los $\epsilon_i$, donde la varianza tiene que ser constante, acabamos de obtener una función que depende de la variable explicativa, por lo tanto no es constante.
 
+---- 
+
 Como vimos anteriormente el modelo lineal $\beta_0+\beta_1X_i$ no es bueno para predecir los valores de $p_i$. Para garantizar que este valor este entre cero y uno, tomaremos cualquier función de distribución $F$ y lo aproximaremos mediante
 $$F(\beta_0+\beta_1X_i)=p_i\ \mbox{para}\ i=1,...,n$$
 Veamos algunas funciones de distribución:
@@ -101,11 +103,10 @@ Veamos algunas funciones de distribución:
 1) $F$ es una función de **distribución Uniforme** en $[0,1]$
 $$p_i = \left \{ 
 \begin{matrix} 
-1  & \mbox{si}\ \beta_0+\beta_1X_i\ge 1 \\
-\beta_0+\beta_1X_i &\mbox{si}\  0<\beta_0+\beta_1X_i<1 \\
-0 & \mbox{si}\ \beta_0+\beta_1X_i\le 0
-\end{matrix} \right. 
-$$
+1  & \text{si} & \beta_0+\beta_1X_i\ge 1 \\
+\beta_0+\beta_1X_i & \mbox{si} &  0<\beta_0+\beta_1X_i<1 \\
+0 & \text{si} & \beta_0+\beta_1X_i\le 0
+\end{matrix} \right.$$
 
 2) $F$ es la función de **distribución Normal** (Modelo Probit)
 $$p_i=\Phi(\beta_0+\beta_1X_i)$$
@@ -116,10 +117,11 @@ De donde $\Phi^{-1}(p_i)=\beta_0+\beta_1X_i$
 $$p_i=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}}=g(X_i) \qquad (1)$$
 Este modelo se conoce como **Modelo Logístico** o **Modelo Logit**.
 
+----
+
 A continuación utilizaremos el modelo logístico, veremos todas sus propiedades. 
 
 Comenzaremos observando el gráfico de $g(x)=\frac{1}{1+e^{-x}}$
-
 ```{r}
 x<-seq(-8,8,1)
 y<-1/(1+exp(-x))
@@ -139,7 +141,7 @@ Veamos que la ecuación $(1)$ cumple con las propiedades siguientes:
 
 A continuación probaremos estas tres propiedades:
 
-1.- Si $\beta_1 \ne 0$, entonces tenemos los tres caso siguientes:
+1) Si $\beta_1 \ne 0$, entonces tenemos los tres caso siguientes:
     
   - Si $\beta_0 + \beta_1 X_i \to \infty$ entonces $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}} \to 1$
   - Si $\beta_0 + \beta_1 X_i \to 0$ entonces $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}} \to \frac{1}{2}$
@@ -147,7 +149,7 @@ A continuación probaremos estas tres propiedades:
 
 La función $g$ es continua por ser composición de funciones continuas.
 
-2.- Sea $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}}=\frac{1}{1+e^{-\beta_0-\beta_1X_i}}$ y llamemos $C=e^{-\beta_0}$, notemos que $C$ es positiva para cualquier valor de $\beta_0$. Luego tenemos:
+2) Sea $g(X_i)=\frac{1}{1+e^{-(\beta_0+\beta_1X_i)}}=\frac{1}{1+e^{-\beta_0-\beta_1X_i}}$ y llamemos $C=e^{-\beta_0}$, notemos que $C$ es positiva para cualquier valor de $\beta_0$. Luego tenemos:
 $$g(X_i)=\frac{1}{1+Ce^{-\beta_1X_i}}$$
 
 Sabemos por el comportamiento de la función exponencial que:
@@ -162,7 +164,7 @@ $$g(a)=\frac{1}{1+Ce^{-\beta_1a}}>\frac{1}{1+Ce^{-\beta_1b}}=g(b)$$
 
 Así tenemos que la función $g(X_i)$ es monótona decreciente si $\beta_1<0$
 
-3.- Ahora veamos que es simétrica:
+3) Ahora veamos que es simétrica:
 $$
 \begin{array}{rl}
 g(-\frac{\beta_0}{\beta_1}-u) & = \frac{1}{1+e^{-\left(\beta_0+\beta_1 \left[-\frac{\beta_0}{\beta_1}-u\right]\right)}}\\
@@ -214,7 +216,9 @@ $$
 
 De donde notamos que la variable $logit(p_i)$ mide la diferencia entre las probabilidades de éxito ($p_i$) y fracaso ($1-p_i$) en escala logaritmica.
 
-### Modelo de Regresión Logística
+----
+
+# Modelo de Regresión Logística
 
 Acabamos de ver la relación que hay entre el modelo de regresión logística y el modelo de regresión lineal. Como conclusión podemos decir que el modelo de regresión logistica consiste en una variable dependiente (explicada) usualmente denotada por $Y$ y una o varias variables independientes denotadas por $X_i$.
 $$
@@ -223,12 +227,12 @@ $$
 
 Como la variable dependiente toma dos valores, a saber, $Y=0 \vee  Y=1$ entonces $$\mathbb{E}(Y=1|x_1,x_2,\dots,x_p)=P(Y=1|x_1,x_2,\dots,x_p)$$
 
-Es decir, la esperanza de que $Y=1$ dado un conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$ es igual a la probabilidad de que $Y=1$ dado el conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$. Veamos porque:
+Es decir, la esperanza de que $Y$ dado un conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$ es igual a la probabilidad de que $Y=1$ dado el conjunto de valores de las variables independientes $x_1,x_2,\dots,x_p$. Veamos porque:
 $$
 \begin{array}{rl}
 \mathbb{E}(Y|x_1,x_2,\dots,x_p) &= 1P(Y=1|x_1,x_2,\dots,x_p) + 0 P(Y=0|x_1,x_2,\dots,x_p)\\
-& = P(Y=1|x_1,x_2,\dots,x_p)\\
-& = \mathbb{E}(Y=1|x_1,x_2,\dots,x_p)
+\mathbb{E}(Y|x_1,x_2,\dots,x_p) & = P(Y=1|x_1,x_2,\dots,x_p)\\
+\mathbb{E}(Y|x_1,x_2,\dots,x_p) & = \mathbb{E}(Y=1|x_1,x_2,\dots,x_p)
 \end{array}
 $$
 
@@ -243,7 +247,7 @@ $$
 \pi(x)= \frac{e^{-7+3x}}{1+e^{-7+3x}}
 $$
 
-Donde el gráfico es:
+El gráfico correspondiente a este ejemplo es:
 ```{r}
 E_y<-c()
 beta0<- -7
@@ -283,7 +287,8 @@ Una diferencia muy importante entre el modelo de regresión lineal y el de regre
     - Si $y=0$ entonces $\epsilon= \pi(x)$ con probabilidad $1-\pi(x)$
     
 Entonces la media de $\epsilon$ es 
-$$\begin{array}{rl}
+$$
+\begin{array}{rl}
 \mathbb{E}(\epsilon) & = (1-\pi(x))P(\epsilon=1-\pi(x))+\pi(x)P(\epsilon=\pi(x))\\
 \mathbb{E}(\epsilon) & = (1-\pi(x))\pi(x)+\pi(x)(1-\pi(x))\\
 \mathbb{E}(\epsilon) & = 0
@@ -303,7 +308,9 @@ Var(\epsilon) & = (1-\pi(x))\pi(x)\\
 $$
 Entonces tenemos que los errores se distribuyen Binomiales, y por lo tanto la variable de respuesta tiene una distribución Binomial.
 
-### Ajuste del modelos de regresión logística
+----
+
+# Ajuste del modelos de regresión logística
 
 Tenemos que encontrar los parámetros desconocidos $\beta_0$ y $\beta_1$, el método más usado para estimarlos es el de mínimos cuadrados. En los modelos de regresión lineal la manera de calcular estos parámetos es maximizando la función de máxima verosimilitud (esta función expresa la probabilidad de los datos observados como una función de parámetros desconocidos). En el caso de los modelos de regresión logística tenemos:
 
@@ -380,7 +387,9 @@ $$
 
 Una vez obtenidos los parámetros estimados podemos calcular la probabilidad cuando las variables independientes toman valores específicos.
 
-### Prueba de significancia para los parámetros
+----
+
+# Prueba de significancia para los parámetros
 
 En todos los modelos de regresión es importante entender y calcular cúal es el nivel de aporte o significancia de cada variable al modelo de regresión. La pregunta es ¿Qué tanto aporta una variable para predecir la variable de respuesta?.
 
@@ -403,9 +412,9 @@ Un valor grande en $SSR$ implica que la variable independiente es importante, y 
 En la regresión logística, la comparación del valor observado con el valor predicho esta basado en el logaritmo de la función de verosimilitud. 
 
 La comparación del valor observado y el predictivo es usando la función de verosimilitud mediante la siguiente expresión:
-$$D=-2ln\left[ \frac{verosimilitud\ con\ el\ modelo\ ajustado}{verosimilitud\ con\ el\ modelo\ saturado}\right]$$
+$$D=-2ln\left[ \frac{\text{verosimilitud con el modelo ajustado}}{\text{verosimilitud con el modelo saturado}}\right]$$
 Donde un modelo saturado es uno que contiene tantos parámetros como valores observados. En el modelo saturado todos los datos son parámetros, entonces:
-$$L(modelo\ saturado)=\prod_{i=1}^n y_i^{y_i}(1-y_i)^{1-y_i}$$
+$$L(\text{modelo saturado})=\prod_{i=1}^n y_i^{y_i}(1-y_i)^{1-y_i}$$
 Como $y_i=0$ ó $y_i=1$ tenemos:
 
 - Si $y_i=0\implies y_i^{y_i}(1-y_i)^{1-y_i}=0^0\times 1^1= 1\times 1=1$
@@ -418,8 +427,8 @@ $$L(modelo\ saturado)=1$$
 Por lo tanto 
 $$
 \begin{array}{rl}
-D & =-2ln\left[ \frac{verosimilitud\ con\ el\ modelo\ ajustado}{1}\right]\\
-D & =-2ln(verosimilitud\ con\ el\ modelo\ ajustado)\\
+D & =-2ln\left[ \frac{\text{verosimilitud con el modelo ajustado}}{1}\right]\\
+D & =-2ln(\text{verosimilitud con el modelo ajustado})\\
 D & = -2\sum_{i=1}^n  y_i ln\left(\frac{\hat\pi(x_i)}{y_i}\right)+(1-y_i)ln\left( \frac{1+\hat\pi(x_i)}{1-y_i}\right)
 \end{array}
 $$
@@ -452,14 +461,22 @@ Así el estimador $\hat \beta_0$ quedaría
 $$
 \begin{array}{rl}
 \frac{\partial L(\beta_0)}{\partial \beta_0} & = \frac{\partial}{\partial \beta_0} \sum_{i=1}^n  y_i \beta_0-ln(1+e^{\beta_0})\\
-\frac{\partial L(\beta_0)}{\partial \beta_0} & = \sum_{i=1}^n  y_i -\frac{1}{1+e^{\beta_0}}e^{\beta_0}=0\\
-& \implies \frac{\sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0}}{1+e^{\beta_0}}=0\\
+\frac{\partial L(\beta_0)}{\partial \beta_0} & = \sum_{i=1}^n  y_i -\frac{1}{1+e^{\beta_0}}e^{\beta_0}=0
+\end{array}
+$$
+Esto implica que
+$$\frac{\sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0}}{1+e^{\beta_0}}=0$$
+
+Despejando
+$$
+\begin{array}{rl}
 & \sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0} =0\\
 & \sum_{i=1}^n  y_i+y_ie^{\beta_0}-e^{\beta_0} =0\\
 & \sum_{i=1}^n  y_i+e^{\beta_0}(y_i-1) =0\\
 & \sum_{i=1}^n  y_i+e^{\beta_0}\sum_{i=1}^n(y_i-1) =0\\
 & \implies e^{\hat \beta_0}= \frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\\
-& \implies \hat \beta_0 = ln \left( \frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\right)=ln \left( \frac{\sum_{i=1}^n  y_i}{\sum_{i=1}^n(1-y_i)}\right)\\
+& \implies \hat \beta_0 = ln \left( \frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\right)\\
+&  \implies \hat \beta_0=ln \left( \frac{\sum_{i=1}^n  y_i}{\sum_{i=1}^n(1-y_i)}\right)\\
 \end{array}
 $$
 
@@ -468,7 +485,12 @@ $$
 \begin{array}{rl}
 \pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} & = \left( \frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}} \right)^{y_i}\left(1-\frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}}\right)^{1-y_i}\\
 & = \left( \frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}} \right)^{y_i}\left(\frac{1}{1+e^{\hat \beta_0}}\right)^{1-y_i}\\
-& = \left( \frac{\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}{1+\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\frac{1}{1+\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i}\\
+& = \left( \frac{\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}{1+\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\frac{1}{1+\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i}
+\end{array}
+$$
+
+$$
+\begin{array}{rl}
 & = \left( \frac{\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}{\frac{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\frac{1}{\frac{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i}\\
 & = \left( \frac{-\sum_{i=1}^n y_i}{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i} \right)^{y_i}\left(\frac{\sum_{i=1}^n(y_i-1)}{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}\right)^{1-y_i}\\
 & = \left( \frac{-\sum_{i=1}^n y_i}{-n} \right)^{y_i}\left(\frac{\sum_{i=1}^n(y_i-1)}{-n}\right)^{1-y_i}\\
@@ -476,16 +498,16 @@ $$
 & = \left( \frac{\sum_{i=1}^n y_i}{n} \right)^{y_i}\left(\frac{\sum_{i=1}^n(1-y_i)}{n}\right)^{1-y_i}\\
 \end{array}
 $$
+
 Si $n_1=\sum_{i=1}^n y_i$ y $n_0=\sum_{i=1}^n 1- y_i$
-$$\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} = \left( \frac{n_1}{n} \right)^{y_i}\left(\frac{n_0}{n}\right)^{1-y_i}
-$$
+$$\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} = \left( \frac{n_1}{n} \right)^{y_i}\left(\frac{n_0}{n}\right)^{1-y_i}$$
 
 Por lo tanto, la verosimilitud del modelo sin la variable es:
 $$
 \begin{array}{rl}
-l(\beta) & =  ln(\prod_{i=1}^n \left( \frac{n_1}{n} \right)^{y_i}\left(\frac{n_0}{n}\right)^{1-y_i})\\
-l(\beta) & =  ln( \left( \frac{n_1}{n} \right)^{\sum_{i=1}^n y_i}\left(\frac{n_0}{n}\right)^{\sum_{i=1}^n 1-y_i})\\
-l(\beta) & =  ln( \left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0})\\
+l(\beta) & =  ln\left(\prod_{i=1}^n \left( \frac{n_1}{n} \right)^{y_i}\left(\frac{n_0}{n}\right)^{1-y_i} \right)\\
+l(\beta) & =  ln\left( \left( \frac{n_1}{n} \right)^{\sum_{i=1}^n y_i}\left(\frac{n_0}{n}\right)^{\sum_{i=1}^n 1-y_i}\right)\\
+l(\beta) & =  ln\left( \left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}\right)\\
 \end{array}
 $$
 
@@ -506,11 +528,72 @@ $$
 
 Bajo la hipótesis nula que $\beta_1$ es igual a 0, el estadístico $G$ sigue una distribución Chi-Cuadrado con 1 grado de libertad $\chi^2_1$. El $p-valor$ asociado a esta prueba es de la forma $P(\chi^2_1 > G)< \alpha$, donde $\alpha$ es el nivel de significancia.
 
-#### Prueba de hipótesis global
+Hay dos pruebas estadisticamente equivalentes: El Test de Wald y el Test de Score. Las suposiciones de estas pruebas es la misma que para la razón de la verosimilitud. 
 
-Para probar si los 
+El **test de Wald** es igual a el razón del estimador de máxima verosimilitud del parámetro $\beta$, $\hat \beta$,  por un estimado de su error estandar. Bajo la hipótesis nula y las suposiciones del tamaño de la muestra, esta razón sigue una distribución Normal.
+$$W=\frac{\hat \beta}{\widehat{SE}(\hat \beta)}$$
+El p-valor de esta prueba es de dos colas y corresponde $P(|z|>W)<1-\alpha$, donde $z$ es una variable aleatoria con distribución normal estandar. 
 
-#### Prueba de hipótesis por variable
+Algunos paquetes estadísticos muestran el estadístico $W^2=z^2$, el cual sigue una distribución chi-cuadado con 1 grado de libertad.
+
+El **test de Score** esta basado en la distribución teórica de la derivada del logaritmo de la verosimilitud. Es una prueba multivariante que requiere el calculo de una matriz. En el caso univariante esta basada en la distribución condicional de la deribada en la ecuación (4), dada la derivada en la ecuación (3).  
+Esta prueba usa el valor de la ecuación (4) calculado usando $\beta_0=\ln(n_1/n_0)$ y $\beta_1=0$, Así tenemos que:
+$$
+\begin{array}{rl}
+\hat \pi(x) & = \frac{e^{\hat\beta_0 + \hat\beta_1x}}{1+e^{\hat\beta_0 + \hat\beta_1x}}\\
+\hat \pi(x) & = \frac{e^{\ln(\frac{n_1}{n_0})}}{1+e^{\ln(\frac{n_1}{n_0})}}\\
+\hat \pi(x) & = \frac{\frac{n_1}{n_0}}{1+\frac{n_1}{n_0}}\\
+\hat \pi(x) & = \frac{\frac{n_1}{n_0}}{\frac{n_0+n_1}{n_0}}\\
+\hat \pi(x) & = \frac{n_1}{n_0+n_1}\\
+\end{array}
+$$
+
+Recordemos que $n_0+n_1=\sum_{i=1}^n y_i + \sum_{i=1}^n (1-y_i) =\sum_{i=1}^n y_i + n -\sum_{i=1}^n y_i=n$ por lo tanto:
+$$
+\begin{array}{rl}
+\hat \pi(x) & = \frac{n_1}{n}\\
+\hat \pi(x) & = \frac{\sum_{i=1}^n y_i}{n}\\
+\hat \pi(x)& = \bar y
+\end{array}
+$$
+
+Así la ecuación (4) nos queda:
+$$\sum_{i=1}^n x_i (y_i - \hat \pi(x))=\sum_{i=1}^n x_i (y_i - \bar y)$$
+
+El estimador de la varianza es $\bar y (1- \bar y)\sum_{i=1}^n (x_i-\bar x)^2$.
+
+El estadístico de esta prueba es 
+$$ST=\frac{\sum_{i=1}^n x_i (y_i - \bar y)}{\sqrt{\bar y (1- \bar y)\sum_{i=1}^n (x_i-\bar x)^2}}$$
+Se compara igual que la prueba de Wald, con una distribución normal estandar.
+
+# Intervalos de confianza
+
+La construcción para estimar intervalos es la misma teoría estadística usada para las pruebas de significancia. 
+Los intervalos de confianza para los estimadores de la pendiente y la intercción generalmente se basan en la prueba de Wald y son llamados *intervalos de confianza basado en Wald*. Viene dados por
+$$
+\begin{array}{rl}
+\hat \beta_1 & \pm \ \ z_{1-\alpha/2}\widehat{SE}(\hat \beta_1)\\
+\hat \beta_1 & \pm \ \ z_{1-\alpha/2}\widehat{SE}(\hat \beta_1)\\
+\end{array}
+$$
+
+Donde $z_{1-\alpha/2}$ es el punto superior al $100(1-\alpha/2)\%$ de la distribución normal estandar, y $\widehat{SE}$ denota el error estandar del parámetro correspondiente.
+
+El $logit$ es la parte lineal del modelo de regresión logística. El estimador del $logit$ es
+$$\hat g (x)=\hat \beta_0 + \hat \beta_1x$$
+
+Veamos quien es la varianza del estimador:
+$$
+\begin{array}{rl}
+\widehat{Var}[\hat g(x)] & = \widehat{Var}[\hat \beta_0 + \hat \beta_1x]\\
+& = \widehat{Var}[\hat \beta_0] + \widehat{Var}[\hat \beta_1x]+2\widehat{Cov}(\beta_0,\beta_1x)\\
+& = \widehat{Var}[\hat \beta_0] + x\widehat{Var}[\hat \beta_1]+2x\widehat{Cov}(\beta_0,\beta_1)
+\end{array}
+$$
+El intervalo de confianza basado en Wald para el $logit$ es
+$$\hat g(x)\pm z_{1-\alpha/2}\widehat{SE}[\hat g(x)]$$
+
+donde $\widehat{SE}[\hat g(x)]$ es la raíz positiva del estimador de la varianza calculado anteriormente.
 
 ### Cociente de verosimilitudes
 
@@ -533,45 +616,14 @@ $$
 Es importante notar que esta razón de verosimilitudes se calcula manteniendo el resto de las variables independientes constantes.
 
 Sin embargo hay un método más sencillo para calcular la razón de verosimilitudes utilizando el valor estimado del parámetro.
-
 $$
 \text{Cociente de verosimilitud}=L_{x_i}=e^{\beta_i}
 $$
 
 Una vez obtenidos los valores estimados de los parámetros del modelo es posible calcular el cociente de verosimilitud de cada variable. Además nos permite calcular los cambios en el cociente de verosimilitud cuando se presentan cambios mayores a una unidad en una variable independiente mientras que el resto de las variables independientes permanece constante.
-
-
-
 $$
 \text{Cociente de verosimilitud}=L_{\Delta(x_i)}=e^{\Delta(x_i)\beta_i}
 $$
 
 Finalmente, el cociente de verosimilitud permite calcular y comparar la verosimilitud de dos eventos diferentes. Si la verosimilitud es igual a $1$ indica que los dos eventos tienen la misma verosimilitud, si por otra parte la variable independiente es significativa y tiene efecto positivo sobre la probabilidad de que el evento ocurra, el cociente de verosimilitud debe ser mayor que $1$.
-
-### Transformación *logit*
-
-$$
-\ln(V)=\beta_0+\beta_1x_1+\dots+\beta_px_p
-$$
-
-$$
-g(x_1+\dots+x_p)=\beta_0+\beta_1x_1+\dots+\beta_px_p
-$$
-
-$$
-\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) = \displaystyle\frac{e^{g(x_1+\dots+x_p)}}{1+e^{g(x_1+\dots+x_p)}}
-$$
-
-$$
-\hat{g}(x_1+\dots+x_p)=\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p
-$$
-
-$$
-\displaystyle\frac{e^{g(x_1+\dots+x_p)}}{1+e^{g(x_1+\dots+x_p)}}=\frac{e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}{1+e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}
-$$
-
-
-
-
-
 
