@@ -143,24 +143,101 @@ suma #Cantidad de individuos vivos por intervalo
 ```{r}
 x<-pntmed #Puntos medios
 y<-suma/indint #Media por intervalo
-plot(x,y)
+plot(x,y, main = "AGE vs Mean de estado del paciente", 
+    xlab="AGE-Años", ylab = "Media STA", type = "b", col= "blue")
 ```
 
 d)
 
 - Escriba una expresión para la verosimilitud y el logaritmo de la verosimilitud para el modelo de regresión logística utilizando los datos no agrupados, $n=200$.
 
+En este caso la variable de respuesta, la dicotómica, es $Y=STA$ y la variable independiente es $X=AGE$, tenemos $\pi(age)=\mathbb{E}[STA|age]=\frac{e^{\beta_0 + \beta_1age}}{1+e^{\beta_0 + \beta_1age}}$. 
+
+Cuando $sta_i=1$ la contribución que da la función de verosimilitud es $\pi(age_i)$ y cuando $sta_i=0$ la contribución que da la función de verosimilitud es $1-\pi(age_i)$, para expresar esta contribución a la verosimilitud tenemos la siguiente expresión
+$$\pi(age_i)^{sta_i}(1-\pi(age_i))^{1-sta_i}$$
+
+Asumiendo independencia en los datos observados, la función de verosimilitud es el producto de la ecuación anterior de todos los $n=200$ datos
+$$
+\begin{array}{rl}
+l(\beta) & = \prod_{i=1}^{200} \pi(age_i)^{sta_i}(1-\pi(age_i))^{1-sta_i}\\
+l(\beta) & = \prod_{i=1}^{200} \left(\frac{e^{\beta_0 + \beta_1age_i}}{1+e^{\beta_0 + \beta_1age_i}} \right)^{sta_i}\left(1-\frac{e^{\beta_0 + \beta_1age_i}}{1+e^{\beta_0 + \beta_1age_i}}\right)^{1-sta_i}\\
+l(\beta) & = \prod_{i=1}^{200} \left(\frac{e^{\beta_0 + \beta_1age_i}}{1+e^{\beta_0 + \beta_1age_i}} \right)^{sta_i}\left(\frac{1}{1+e^{\beta_0 + \beta_1age_i}}\right)^{1-sta_i}\\
+\end{array}
+$$
+
+Aplicando la función logaritmo y sus propiedades:
+$$
+\begin{array}{rl}
+L(\beta) & = \ln(l(\beta))\\
+L(\beta) & = \ln \left( \prod_{i=1}^{200} \left(\frac{e^{\beta_0 + \beta_1age_i}}{1+e^{\beta_0 + \beta_1age_i}} \right)^{sta_i}\left(\frac{1}{1+e^{\beta_0 + \beta_1age_i}}\right)^{1-sta_i} \right)\\
+L(\beta) & = \sum_{i=1}^{200} \ln\left( \left(\frac{e^{\beta_0 + \beta_1age_i}}{1+e^{\beta_0 + \beta_1age_i}} \right)^{sta_i}\left(\frac{1}{1+e^{\beta_0 + \beta_1age_i}}\right)^{1-sta_i}\right)\\
+L(\beta) & = \sum_{i=1}^{200} sta_i \ln\left(\frac{e^{\beta_0 + \beta_1age_i}}{1+e^{\beta_0 + \beta_1age_i}} \right)+(1-sta_i) \ln \left(\frac{1}{1+e^{\beta_0 + \beta_1age_i}}\right)\\
+L(\beta) & = \sum_{i=1}^{200} sta_i \ln(e^{\beta_0 + \beta_1age_i}) -sta_i \ln(1+e^{\beta_0 + \beta_1age_i}) + (1-sta_i)( \ln(1)-\ln(1+e^{\beta_0 + \beta_1age_i}))\\
+L(\beta) & = \sum_{i=1}^{200} sta_i \ln(e^{\beta_0 + \beta_1age_i}) -sta_i \ln(1+e^{\beta_0 + \beta_1age_i}) - (1-sta_i)\ln(1+e^{\beta_0 + \beta_1age_i})\\
+L(\beta) & = \sum_{i=1}^{200} sta_i \ln(e^{\beta_0 + \beta_1age_i}) -sta_i \ln(1+e^{\beta_0 + \beta_1age_i})-\ln(1+e^{\beta_0 + \beta_1age_i}) + sta_i\ln(1+e^{\beta_0 + \beta_1age_i})\\
+L(\beta) & = \sum_{i=1}^{200} sta_i \ln(e^{\beta_0 + \beta_1age_i})-\ln(1+e^{\beta_0 + \beta_1age_i})\\
+L(\beta) & = \sum_{i=1}^{200} sta_i (\beta_0 + \beta_1age_i)-\ln(1+e^{\beta_0 + \beta_1age_i})\\
+\end{array}
+$$
+
 - Obtenga la expresión para las dos ecuaciones de verosimilitud.
 
+Derivando con respecto a $\beta_0$:
+$$
+\begin{array}{rl}
+\frac{\partial L(\beta)}{\partial \beta_0} & = \sum_{i=1}^{200} sta_i - \frac{1}{1+e^{\beta_0 + \beta_1age_i}}e^{\beta_0 + \beta_1age_i}\\
+\frac{\partial L(\beta)}{\partial \beta_0} & = \sum_{i=1}^{200} sta_i - \frac{e^{\beta_0 + \beta_1age_i}}{1+e^{\beta_0 + \beta_1age_i}}\\
+\frac{\partial L(\beta)}{\partial \beta_0} & = \sum_{i=1}^{200} sta_i - \pi(age_i)
+\end{array}
+$$
+
+Igualando a cero, tenemos la primera ecuación
+$$\sum_{i=1}^{200} sta_i - \pi(age_i)=0$$
+
+Derivando con respecto a $\beta_1$
+$$
+\begin{array}{rl}
+\frac{\partial L(\beta)}{\partial \beta_1} & = \sum_{i=1}^{200} sta_i age_i -\frac{1}{1+e^{\beta_0+\beta_1 age_i}} e^{\beta_0+\beta_1 age_i}age_i\\
+\frac{\partial L(\beta)}{\partial \beta_1} & = \sum_{i=1}^{200} sta_i age_i -\frac{e^{\beta_0+\beta_1 age_i}}{1+e^{\beta_0+\beta_1 age_i}} age_i\\
+\frac{\partial L(\beta)}{\partial \beta_1} & = \sum_{i=1}^{200} age_i \left( sta_i -\frac{e^{\beta_0+\beta_1 age_i}}{1+e^{\beta_0+\beta_1 age_i}} \right) \\
+\frac{\partial L(\beta)}{\partial \beta_1} & = \sum_{i=1}^{200} age_i \left( sta_i -\pi(age_i) \right) \\
+\end{array}
+$$
+
+Igualando a cero tenemos la segunda ecuación:
+$$\sum_{i=1}^{200} age_i \left( sta_i -\pi(age_i) \right)=0$$
 
 e)
 
 - Utilizando el paquete de regresión logística de su preferencia obtenga los estimadores de máxima verosimilitud de los parámetros del modelo de regresión logística basado en **STA** y **AGE**. Estos estimadores deben estar basados en los datos no agrupados, $n=200$. 
 
+```{r}
+logit <- glm(STA ~ AGE, data = StaAge, family = "binomial")
+logit$coefficients
+```
+
+Con el comando usado, obtuvimos que los estimadores de máxima verosimilitud de los parámetros $\beta_0$ y $\beta_1$ son:
+$$\hat \beta_0 = -3.05851$$
+$$\hat \beta_1 = -0.02754$$
+
 - Utilizando los parámetros estimados escriba la ecuación de los valores ajustados, es decir, las probabilidades logísticas estimadas.
+
+Los valores ajustados vienen dados por la ecuación
+$$\hat \pi(age)=\frac{e^{-3.05851-0.02754 age}}{1+e^{-3.05851-0.02754 age}}$$
 
 - Haga un gráfico de la ecuación de los valores ajustados en los ejes utilizados en el gráfico realizado en b) y c).
 
+```{r}
+x1<-sort(StaAge$AGE) #Edades
+x2<-pntmed #Puntos medios de las clases de edades
+
+y<- exp(-3.05851-0.02754*x1)/(1+exp(-3.05851-0.02754*x1))
+plot(x1,y,type = "b", col= "blue")#, main = TeX('AGE vs $\hat \pi(age)$'), 
+    #xlab="AGE-Años", ylab = TeX('$\hat \pi(age)$'))
+
+y<- exp(-3.05851-0.02754*x2)/(1+exp(-3.05851-0.02754*x2))
+plot(x2,y,type = "b", col= "blue")
+```
 
 f)
 
@@ -169,6 +246,7 @@ f)
 g)
 
 - Usando los resultados de la regresión logística aplicada a los datos en e), verifique la significancia del coeficiente para **AGE** utilizando la prueba de razones de verosimilitudes, la prueba de Wald y, si es posible, la prueba de Score.
+
 
 - ¿Qué premisas son necesarias para calcular los $p$-valores para que cada una de estas pruebas de hipótesis sean válidas?
 
