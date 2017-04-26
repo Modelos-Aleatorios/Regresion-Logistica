@@ -79,15 +79,12 @@ $$p_i=\frac{e^{\beta_0+\beta_1AGE_i}}{1+e^{\beta_0+\beta_1AGE_i}}$$
 
 Por lo tanto 
 $$
-\begin{array}{rl}
-logit(pi) & = \beta_0+\beta_1AGE_i\\
-& = ln(p_i)- ln(1-p_i)
-\end{array}
+logit(p_i)  = \beta_0+\beta_1AGE_i
 $$
 
 - ¿Qué características de la variable respuesta (explicada/dependiente), **STA**, nos induce a considerar un modelo de regresión logística en lugar del modelo de regresión lineal para describir la relación entre **STA** y **AGE**.
 
-La principal característica para pensar en un modelo de regresión logística es que la variable dependiente $STA$ es discreta y solo toma dos valores que son 0 y 1 (es docotómica). En el caso de la regresión lineal esta variable puede tomar cualquier valor entre $-\infty$ y $\infty$.
+La principal característica para pensar en un modelo de regresión logística es que la variable dependiente $STA$ es discreta y solo toma dos valores que son 0 y 1 (es dicotómica). En el caso de la regresión lineal esta variable puede tomar cualquier valor entre $-\infty$ y $\infty$.
 
 b)
 - Haga un gráfico (nube de puntos) de **STA** versus **AGE**.
@@ -98,6 +95,8 @@ plot(StaAge$AGE, StaAge$STA, main = "STA vs AGE", xlab = "AGE-AÑOS",
 ```
 
 En esté grafico la variable **STA** solo toma dos valores 0 si el paciente esta vivo y 1 si esta muerto. 
+
+Se observa que a medida que aumenta la edad hay más pacientes muertos.
 
 c)
 
@@ -118,15 +117,12 @@ for(i in 1:8)
   ind<-0
   for(j in 1:m)
   { 
-    if(inf<=StaAge$AGE[j])
-    {
-      if(StaAge$AGE[j]<=sup)
-      {
+    if(inf<=StaAge$AGE[j] && StaAge$AGE[j]<=sup) {
         ind<-ind+1
-        if(StaAge$STA[j]==1)
-        { sum<-sum+1}
-      }  
-    }
+        if(StaAge$STA[j]==1) { 
+          sum<-sum+1
+        }
+    }  
   }
   indint[i]<-ind
   suma[i]<-sum
@@ -135,7 +131,33 @@ for(i in 1:8)
 }
 
 indint#Cantidad de Individuos por intervalos
-suma #Cantidad de individuos vivos por intervalo
+suma #Cantidad de individuos muertos por intervalo
+```
+
+```{r}
+intervals<-c(15, 25, 35, 45, 55, 65, 75, 85, 94)
+intervalsBySubject<-findInterval(StaAge$AGE, intervals)
+dead<-c()
+for (i in min(intervalsBySubject):max(intervalsBySubject)) {
+  dead<-c(dead, sum(StaAge$STA[intervalsBySubject==i]))
+}
+
+mid<-c()
+for (i in 1:(length(intervals)-1)) {
+  mid<-c(mid,intervals[i]+9/2)
+}
+mid
+
+dfFreq<-as.data.frame(table(intervalsBySubject))
+deadMean<-dead/dfFreq$Freq
+
+plot(mid,deadMean, main = "AGE vs Mean de estado del paciente", 
+    xlab="AGE-Años", ylab = "Media STA", type = "b", col= "blue")
+
+intervals<-c(15, 24, 34, 44, 54, 64, 74, 84, 94)
+tblFreq<-table(cut(StaAge$AGE, breaks = intervals))
+dfFreq<-as.data.frame(dfFreq)
+plot(tblFreq)
 ```
 
 - Dibuje los valores de la media de **STA** versus el punto medio del intervalo de **AGE** correspondiente, utilizando los mismos ejes utilizados en b)
@@ -239,6 +261,11 @@ plot(x1,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'),
 y<- exp(-3.05851+0.02754*x2)/(1+exp(-3.05851+0.02754*x2))
 plot(x2,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
     xlab="AGE-Años", ylab = TeX('Estimador de pi'))
+
+x3<-0:300
+y<- exp(-3.05851+0.02754*x3)/(1+exp(-3.05851+0.02754*x3))
+plot(x3,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
+    xlab="AGE-Años", ylab = TeX('Estimador de pi'))
 ```
 
 f)
@@ -327,6 +354,7 @@ i)
 - Obtenga la matriz de covarianza estimada para el modelo ajustado en e).
 ```{r}
 cov(StaAge$STA,StaAge$AGE)
+cor(StaAge$STA,StaAge$AGE)
 ```
 
 - Calcule el *logit* y la probabilidad logística estimada para un individuo de $60$ años.
@@ -353,7 +381,7 @@ prologist<-function(x,beta0,beta1)
 prologist(60,mod_AGE$coefficients[1],mod_AGE$coefficients[2])
 ```
 
-Es decir la probabilidad de que una persona con 60 años de edad este viva es del 19%.
+Es decir la probabilidad de que una persona con 60 años de edad este muerta es del 19%.
 
 - Calcule el intervalo de confianza con un nivel de $95\%$ para la transformación *logit* y la probabilidad logística estimada.
 
@@ -364,8 +392,10 @@ Donde $\widehat{SE}[\hat g(x)]=\sqrt{\widehat{Var}[\hat \beta_0] + x\widehat{Var
 ```{r}
 x<-c(12:80)
 SE_g<-sqrt(0.69608124^2 + x*0.01056416^2)
-inf <- logit(x,mod_AGE$coefficients[1],mod_AGE$coefficients[2])- qnorm(0.95)*SE_g
-sup <- logit(x,mod_AGE$coefficients[1],mod_AGE$coefficients[2])+ qnorm(0.95)*SE_g
+inf <- logit(x,mod_AGE$coefficients[1],
+             mod_AGE$coefficients[2])- qnorm(0.95)*SE_g
+sup <- logit(x,mod_AGE$coefficients[1],
+             mod_AGE$coefficients[2])+ qnorm(0.95)*SE_g
 
 head(inf)
 head(sup)
