@@ -212,18 +212,19 @@ e)
 - Utilizando el paquete de regresión logística de su preferencia obtenga los estimadores de máxima verosimilitud de los parámetros del modelo de regresión logística basado en **STA** y **AGE**. Estos estimadores deben estar basados en los datos no agrupados, $n=200$. 
 
 ```{r}
-logit <- glm(STA ~ AGE, data = StaAge, family = "binomial")
-logit$coefficients
+#Modelo con la variable AGE
+mod_AGE <- glm(STA ~ AGE, data = StaAge, family = "binomial")
+mod_AGE$coefficients
 ```
 
 Con el comando usado, obtuvimos que los estimadores de máxima verosimilitud de los parámetros $\beta_0$ y $\beta_1$ son:
 $$\hat \beta_0 = -3.05851$$
-$$\hat \beta_1 = -0.02754$$
+$$\hat \beta_1 = 0.02754$$
 
 - Utilizando los parámetros estimados escriba la ecuación de los valores ajustados, es decir, las probabilidades logísticas estimadas.
 
 Los valores ajustados vienen dados por la ecuación
-$$\hat \pi(age)=\frac{e^{-3.05851-0.02754 age}}{1+e^{-3.05851-0.02754 age}}$$
+$$\hat \pi(age)=\frac{e^{-3.05851+0.02754 age}}{1+e^{-3.05851+0.02754 age}}$$
 
 - Haga un gráfico de la ecuación de los valores ajustados en los ejes utilizados en el gráfico realizado en b) y c).
 
@@ -231,43 +232,155 @@ $$\hat \pi(age)=\frac{e^{-3.05851-0.02754 age}}{1+e^{-3.05851-0.02754 age}}$$
 x1<-sort(StaAge$AGE) #Edades
 x2<-pntmed #Puntos medios de las clases de edades
 
-y<- exp(-3.05851-0.02754*x1)/(1+exp(-3.05851-0.02754*x1))
-plot(x1,y,type = "b", col= "blue")#, main = TeX('AGE vs $\hat \pi(age)$'), 
-    #xlab="AGE-Años", ylab = TeX('$\hat \pi(age)$'))
+y<- exp(-3.05851+0.02754*x1)/(1+exp(-3.05851+0.02754*x1))
+plot(x1,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
+    xlab="AGE-Años", ylab = TeX('Estimador de pi'))
 
-y<- exp(-3.05851-0.02754*x2)/(1+exp(-3.05851-0.02754*x2))
-plot(x2,y,type = "b", col= "blue")
+y<- exp(-3.05851+0.02754*x2)/(1+exp(-3.05851+0.02754*x2))
+plot(x2,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
+    xlab="AGE-Años", ylab = TeX('Estimador de pi'))
 ```
 
 f)
 
 - Resuma los resultados de acuerdo a los gráficos obtenidos de los ejercicios b), c) y e).
 
+
 g)
 
 - Usando los resultados de la regresión logística aplicada a los datos en e), verifique la significancia del coeficiente para **AGE** utilizando la prueba de razones de verosimilitudes, la prueba de Wald y, si es posible, la prueba de Score.
 
+1) **Razón de verosimilitud**:
+
+```{r}
+#Modelo sin la variable AGE
+mod <- glm(STA ~ STA, data = StaAge, family = "binomial")
+mod$coefficients
+
+#Estadístico G
+G<-mod$deviance-mod_AGE$deviance
+G
+
+#P-valor
+1 - pchisq(G, df = 1)
+
+anova(mod, mod_AGE, test = "Chisq") 
+```
+
+El p-valor que obtenemos es 0.005069187, si tomamos un nivel de significancia $\alpha=0.05$, rechazamos la hipótesis nula $H_0 : \beta_1=0$, que es el parámetro correspondiente a la variable **AGE**, ya que el p-valor es menor que el nivel de significancia. Por lo tanto concluimos que esta variable es significativamente importante para predecir la variable **STA**.
+
+2) **Test de Wald**:
+
+```{r}
+summary(mod_AGE)$coefficients
+```
+
+La primera y segunda columna contienen el valor estimado del parámetro y su erros estandar. Tomando estos valores se calcula la tercera columna, que se titula $\text{z value}$, y corresponde al valor del estadístico de Wald, es decir 
+$$
+\begin{array}{rl}
+W_{\beta_0} & =\frac{\hat \beta_0}{\widehat{SE}(\hat \beta_0)}=\frac{-3.05851}{0.69608}=-4.393906\\
+W_{\beta_1} & =\frac{\hat \beta_1}{\widehat{SE}(\hat \beta_1)}=\frac{0.02754}{0.01056}=2.607\\
+\end{array}
+$$
+
+En la cuarta columna obtenemos el $\text{p-value}$ que corresponde al p-valor comparado con una distribución normal con un nivel de significancia $\alpha$. Por lo tanto si tomamos $\alpha =0.05$ en ambos casos rechazamos la hipótesis nula ($H_0: \beta_i=0$ para $i=0,1$), ya que estos valores son más pequeños que $\alpha$, así concluimos que ambos parámetros son significativos para predecir la variable **STA**.
+
+3) **Test de Score**:
+```{r}
+anova(mod, mod_AGE, test = "Rao") 
+```
+
+OJO ESTO NO ME CONVENCE
 
 - ¿Qué premisas son necesarias para calcular los $p$-valores para que cada una de estas pruebas de hipótesis sean válidas?
 
 - ¿Los resultados de estas pruebas son consistentes entre ellos?
 
-- ¿Cual es el valor de la devianza para el modelo ajustado?
 
+- ¿Cual es el valor de la devianza para el modelo ajustado?
+```{r}
+mod_AGE$deviance
+```
 
 h)
 
-- Utilizando los resultados del ejercicio e) calcule el intervalo de confianza con un nivel de $95\%$ para el término constante $\hat\beta_0$ y para la pendiente (parámetro $\hat\beta_1$).
+- Utilizando los resultados del ejercicio e) calcule el intervalo de confianza con un nivel de $95\%$ para el término constante $\hat\beta_0$ y para la pendiente (parámetro $\hat\beta_1$)
 
-- Interprete el intervalo de confianza para la pendiente (parámetro $\hat\beta_1$).
+```{r}
+#Intervalos de confianza para ambos parámetros
+#Para beta_0
+mod_AGE$coefficients[1]-qnorm(0.975)*0.69608124
+mod_AGE$coefficients[1]+qnorm(0.975)*0.69608124
+#Para beta_1
+mod_AGE$coefficients[2]-qnorm(0.975)*0.01056416
+mod_AGE$coefficients[2]+qnorm(0.975)*0.01056416
+
+confint.default(mod_AGE)
+```
+
+- Interprete el intervalo de confianza 
+
+En ambos intervalos no se incluye el cero, por lo tanto podriamos rechazar la hipótesis nula de que estos parámetros son distintos de cero, ya que con un nivel de confianza del 95% los verdaderos valores de los parámetros estarán dentro de los intervalos estimados.
 
 i)
 
 - Obtenga la matriz de covarianza estimada para el modelo ajustado en e).
+```{r}
+cov(StaAge$STA,StaAge$AGE)
+```
 
 - Calcule el *logit* y la probabilidad logística estimada para un individuo de $60$ años.
 
+El estimador **logit** es 
+$$\hat g(age)=\hat \beta_0+ \hat \beta_1\times age=-3.058513+0.02754261\times age$$
+
+```{r}
+#Función Logit
+logit<-function(x,beta0,beta1)
+{return(beta0+beta1*x)}
+
+logit(60,mod_AGE$coefficients[1],mod_AGE$coefficients[2])
+```
+
+La probabilidad logística estimada es
+$$\hat \pi (age) = \frac{e^{\hat \beta_0 + \beta_1 age}}{1+e^{\hat \beta_0 + \beta_1 age}}=\frac{e^{-3.058513+0.02754261\times age}}{1+e^{-3.058513+0.02754261\times age}}$$
+
+```{r}
+#Función Logit
+prologist<-function(x,beta0,beta1)
+{return(exp(beta0+beta1*x)/(1+exp(beta0+beta1*x)))}
+
+prologist(60,mod_AGE$coefficients[1],mod_AGE$coefficients[2])
+```
+
+Es decir la probabilidad de que una persona con 60 años de edad este viva es del 19%.
+
 - Calcule el intervalo de confianza con un nivel de $95\%$ para la transformación *logit* y la probabilidad logística estimada.
+
+El intervalo de confianza para la transformación **logit** es
+$$\hat g(x)\pm z_{1-\alpha/2}\widehat{SE}[\hat g(x)]$$
+Donde $\widehat{SE}[\hat g(x)]=\sqrt{\widehat{Var}[\hat \beta_0] + x\widehat{Var}[\hat \beta_1]+2x\widehat{Cov}(\beta_0,\beta_1)}$
+
+```{r}
+x<-c(12:80)
+SE_g<-sqrt(0.69608124^2 + x*0.01056416^2)
+inf <- logit(x,mod_AGE$coefficients[1],mod_AGE$coefficients[2])- qnorm(0.95)*SE_g
+sup <- logit(x,mod_AGE$coefficients[1],mod_AGE$coefficients[2])+ qnorm(0.95)*SE_g
+
+head(inf)
+head(sup)
+```
+
+Un intervalo de confianza para la probabilidad logística estimada es
+$$\hat \pi(age) \pm z_{1-\alpha/2}\widehat{SE}(\hat \pi(age))$$
+```{r}
+prob_ajus<- predict(mod_AGE, type = "response", se.fit = TRUE)
+inf<-prob_ajus[[1]] - qnorm(0.95) * prob_ajus[[2]]
+sup<-prob_ajus[[1]] + qnorm(0.95) * prob_ajus[[2]]
+
+head(inf)
+head(sup)
+```
 
 - Escriba una interpretación de la probabilidad estimada y su intervalo de confianza.
 
