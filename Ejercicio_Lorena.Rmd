@@ -96,76 +96,49 @@ plot(StaAge$AGE, StaAge$STA, main = "STA vs AGE", xlab = "AGE-AÑOS",
 
 En esté grafico la variable **STA** solo toma dos valores 0 si el paciente esta vivo y 1 si esta muerto. 
 
-Se observa que a medida que aumenta la edad hay más pacientes muertos.
+Mediante el gráfico observamos que a medida que aumenta la edad hay más pacientes muertos, el cual es un comportamiento que se espera.
 
 c)
 
 - Utilizando los intervalos $[15, 24], [25, 34], [35, 44], [45, 54], [55, 64], [65, 74], [75, 84], [85, 94]$ para **AGE**, calcule la media de **STA** para todos los individuos de la muestra cuyas edades pertenecen a los intervalos definidos en **AGE**.
 
 ```{r}
-inf <- 15
-sup <- 24
-suma<-c()
-indint<-c()
-pntmed<-c()
-m<-length(StaAge$AGE)
+#Limites inferiores de los intervalos
+intervalos<-c(15, 25, 35, 45, 55, 65, 75, 85, 94) 
 
-for(i in 1:8)
-{
-  pntmed[i]<-(sup+inf)/2
-  sum<-0
-  ind<-0
-  for(j in 1:m)
-  { 
-    if(inf<=StaAge$AGE[j] && StaAge$AGE[j]<=sup) {
-        ind<-ind+1
-        if(StaAge$STA[j]==1) { 
-          sum<-sum+1
-        }
-    }  
-  }
-  indint[i]<-ind
-  suma[i]<-sum
-  inf<-inf+10;
-  sup<-sup+10;
-}
+#Posición de las edades en los intervalos
+Sujeninter<-findInterval(StaAge$AGE, intervalos) 
 
-indint#Cantidad de Individuos por intervalos
-suma #Cantidad de individuos muertos por intervalo
-```
-
-```{r}
-intervals<-c(15, 25, 35, 45, 55, 65, 75, 85, 94)
-intervalsBySubject<-findInterval(StaAge$AGE, intervals)
+#Función para contar la cantidad estados iguales
+#a muerto, en cada intervalo
 dead<-c()
-for (i in min(intervalsBySubject):max(intervalsBySubject)) {
-  dead<-c(dead, sum(StaAge$STA[intervalsBySubject==i]))
+for (i in min(Sujeninter):max(Sujeninter)) {
+  dead<-c(dead, sum(StaAge$STA[Sujeninter==i]))
 }
 
+#Puntos medios de cada intervalo
 mid<-c()
-for (i in 1:(length(intervals)-1)) {
-  mid<-c(mid,intervals[i]+9/2)
+for (i in 1:(length(intervalos)-1)) {
+  mid<-c(mid,intervalos[i]+9/2)
 }
-mid
 
-dfFreq<-as.data.frame(table(intervalsBySubject))
+#Data.frame con la frecuencias en cada intervalo 
+dfFreq<-as.data.frame(table(Sujeninter))
+
+#Medias de los muertos en cada intervalo
 deadMean<-dead/dfFreq$Freq
-
-plot(mid,deadMean, main = "AGE vs Mean de estado del paciente", 
-    xlab="AGE-Años", ylab = "Media STA", type = "b", col= "blue")
-
-intervals<-c(15, 24, 34, 44, 54, 64, 74, 84, 94)
-tblFreq<-table(cut(StaAge$AGE, breaks = intervals))
-dfFreq<-as.data.frame(dfFreq)
-plot(tblFreq)
+deadMean
 ```
+
+Este último vector nos indica las medias de los intervalos anteriores, con esto reforzamos lo que se habia dicho anteriormente que cuando aumenta la edad la cantidad de personas muertas aumenta, vemos que los promedios aumentan de 7% en el primer intervalo a 45% en el último intervalo.
 
 - Dibuje los valores de la media de **STA** versus el punto medio del intervalo de **AGE** correspondiente, utilizando los mismos ejes utilizados en b)
 
 ```{r}
-x<-pntmed #Puntos medios
-y<-suma/indint #Media por intervalo
-plot(x,y, main = "AGE vs Mean de estado del paciente", 
+x<-mid #Puntos medios de los intervalos
+y<-deadMean #Media referente a la cantidad de muerto por intervalo
+
+plot(x,y, main = "AGE vs Media de estado del paciente", 
     xlab="AGE-Años", ylab = "Media STA", type = "b", col= "blue")
 ```
 
@@ -251,20 +224,24 @@ $$\hat \pi(age)=\frac{e^{-3.05851+0.02754 age}}{1+e^{-3.05851+0.02754 age}}$$
 - Haga un gráfico de la ecuación de los valores ajustados en los ejes utilizados en el gráfico realizado en b) y c).
 
 ```{r}
-x1<-sort(StaAge$AGE) #Edades
-x2<-pntmed #Puntos medios de las clases de edades
-
-y<- exp(-3.05851+0.02754*x1)/(1+exp(-3.05851+0.02754*x1))
-plot(x1,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
+x<-sort(StaAge$AGE) #Edades
+y<- exp(-3.05851+0.02754*x)/(1+exp(-3.05851+0.02754*x))
+plot(x,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
     xlab="AGE-Años", ylab = TeX('Estimador de pi'))
 
-y<- exp(-3.05851+0.02754*x2)/(1+exp(-3.05851+0.02754*x2))
-plot(x2,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
-    xlab="AGE-Años", ylab = TeX('Estimador de pi'))
 
-x3<-0:300
-y<- exp(-3.05851+0.02754*x3)/(1+exp(-3.05851+0.02754*x3))
-plot(x3,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
+x<-mid #Puntos medios de las clases de edades
+y<- exp(-3.05851+0.02754*x)/(1+exp(-3.05851+0.02754*x))
+plot(x,y,type = "b", col= "blue", main = TeX('AGE vs Estimador de pi'), 
+    xlab="AGE-Años", ylab = TeX('Estimador de pi'))
+```
+
+En estos graficos no vemos el comportamiento de "s" que tiene este tipo de función para ello vamos extender su eje $x$ y observar mejor la forma.
+
+```{r}
+x<-c(0:300)
+y<- exp(-3.05851+0.02754*x)/(1+exp(-3.05851+0.02754*x))
+plot(x,y,type = "l", col= "blue", main = TeX('AGE vs Estimador de pi'), 
     xlab="AGE-Años", ylab = TeX('Estimador de pi'))
 ```
 
@@ -272,6 +249,7 @@ f)
 
 - Resuma los resultados de acuerdo a los gráficos obtenidos de los ejercicios b), c) y e).
 
+Del primer gráfico podemos notar que los promedios de personas muertas aumentan a medida que las edades aumentan, con el ajuste del modelo de regresión estimamos estas probabilidades y son las que observamos en los últimos gráficos, de las que podemos decir que las probabilidades de muertes de personas con edades mayores a 80 años es de 40% y para edades mayores su probabilidad de muerte es mayor. Si comparamos con el primer gráfico estas probabilidades estan muy proximas a los promedios, lo que indica que el modelo esta muy proximo a la realidad de los datos. 
 
 g)
 
@@ -317,12 +295,15 @@ En la cuarta columna obtenemos el $\text{p-value}$ que corresponde al p-valor co
 anova(mod, mod_AGE, test = "Rao") 
 ```
 
-OJO ESTO NO ME CONVENCE
+Obtenemos un $\text{p-value}=0.007377$ con lo cual rechazamos la hipótesis nula.
 
 - ¿Qué premisas son necesarias para calcular los $p$-valores para que cada una de estas pruebas de hipótesis sean válidas?
 
+Las premisas necesarias se basan en la normalidad asintótica de los estimadores.
+
 - ¿Los resultados de estas pruebas son consistentes entre ellos?
 
+Si, en efecto en las tres pruebas se recharazón las hipótesis nulas, es decir los parámetros $\beta_0$ y $\beta_1$ son significativamente importantes para predecir la variable de respuesta **STA**.
 
 - ¿Cual es el valor de la devianza para el modelo ajustado?
 ```{r}
@@ -342,6 +323,7 @@ mod_AGE$coefficients[1]+qnorm(0.975)*0.69608124
 mod_AGE$coefficients[2]-qnorm(0.975)*0.01056416
 mod_AGE$coefficients[2]+qnorm(0.975)*0.01056416
 
+#Función que cálcula los intervalos
 confint.default(mod_AGE)
 ```
 
@@ -391,7 +373,7 @@ Donde $\widehat{SE}[\hat g(x)]=\sqrt{\widehat{Var}[\hat \beta_0] + x\widehat{Var
 
 ```{r}
 x<-c(12:80)
-SE_g<-sqrt(0.69608124^2 + x*0.01056416^2)
+SE_g<-sqrt(0.69608124^2 + x^2*0.01056416^2)
 inf <- logit(x,mod_AGE$coefficients[1],
              mod_AGE$coefficients[2])- qnorm(0.95)*SE_g
 sup <- logit(x,mod_AGE$coefficients[1],
@@ -417,6 +399,7 @@ head(sup)
 j)
 
 - Realice la regresión logística para obtener el *logit* estimado y su error estándar para cada sujeto en el estudio **ICU**.
+
 
 - Grafique el *logit* estimado y los intervalos de confianza puntuales con un nivel de $95\%$ contra **AGE** para cada individuo.
 
