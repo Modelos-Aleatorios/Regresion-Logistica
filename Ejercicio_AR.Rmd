@@ -3,8 +3,11 @@ title: "Regresión Logística - Ejercicio"
 author: "Alexander A. Ramírez M. (alexanderramirez.me)"
 date: "24/4/2017"
 output:
-  pdf_document: default
-  html_document: default
+  pdf_document: 
+    toc: yes
+    toc_depth: 3
+  html_document: 
+    toc: yes
 fontsize: 12pt
 ---
 
@@ -76,28 +79,27 @@ head(icu.reduced)
 
 a)
 
-- Escriba la ecuación para el modelo de regresión logística de **STA** y **AGE**.
+- Escriba la ecuación para el modelo de regresión logística de Estado Vital (**STA**) y Edad (**AGE**).
 
 $$
-\mathbb{E}[STA|AGE]=P(STA=1|AGE)=\pi(AGE) = \frac{e^{\beta_0+\beta_1 AGE}}{1+e^{\beta_0+\beta_1 AGE}}
+\mathbb{E}[STA|AGE]=P(STA=1|AGE)=\pi(AGE) = \frac{e^{\beta_0+\beta_1 AGE}}{1+e^{\beta_0+\beta_1 AGE}} = \frac{1}{1+e^{-(\beta_0+\beta_1 AGE)}}
 $$
 
 - Escriba la ecuación de la transformación *logit* de este modelo de regresión logística.
 
-Sea $p_i=\displaystyle\frac{1}{1+e^{-g(x)}}$ si $g(x)=\beta_0+\beta_1x$
+Sea $p_i=\displaystyle\frac{1}{1+e^{-g(AGE_i)}}$ si $g(AGE_i)=\beta_0+\beta_1AGE_i$
 
 $$
 \begin{array}{rl}
 logit(p_i) &= ln\Big(\frac{p_i}{1-p_i}\Big) \\
 &= \\
-&= \beta_0+\beta_1x
+&= \beta_0+\beta_1 AGE_i \\
+logit(p_i) &= g(AGE_i)
 \end{array}
 $$
 
-Donde en nuestro caso $x=AGE$ por lo cual
-
 $$
-logit(p_i)=\beta_0+\beta_1 AGE
+logit(p_i)=\beta_0+\beta_1 AGE_i
 $$
 
 - ¿Qué características de la variable respuesta (explicada/dependiente), **STA**, nos induce a considerar un modelo de regresión logística en lugar del modelo de regresión lineal para describir la relación entre **STA** y **AGE**.
