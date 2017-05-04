@@ -404,7 +404,7 @@ Es decir, la suma de los valores observados es igual a la suma de los valores es
 
 Cuando se tienen más de una variable explicativa aplicamos el mismo procedimiento de derivar con respecto a cada parámetro e igularlas a cero, obteniendo $\hat\beta_0,\hat\beta_1,\dots,\hat\beta_p$ de los parámetros $\beta_0,\beta_1,\dots,\beta_p$. En este caso el modelo de regresión logistica estimado queda
 $$
-\hat{y}=\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) = P(Y=1|x_1,x_2,\dots,x_p) = \frac{e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}{1+e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}
+\hat{y}=\mathbb{E}(Y=1|x_1,x_2,\dots,x_p) = P(Y=1|x_1,x_2,\dots,x_p) = \frac{e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}{1+e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}=\displaystyle\frac{1}{1+\displaystyle\frac{1}{e^{\hat\beta_0+\hat\beta_1x_1+\dots+\hat\beta_px_p}}}
 $$
 
 Una vez obtenidos los parámetros estimados podemos calcular la probabilidad cuando las variables independientes toman valores específicos.
@@ -482,37 +482,37 @@ $$
 Así el estimador $\hat \beta_0$ quedaría
 $$
 \begin{array}{rl}
-\frac{\partial L(\beta_0)}{\partial \beta_0} & = \frac{\partial}{\partial \beta_0} \sum_{i=1}^n  y_i \beta_0-ln(1+e^{\beta_0})\\
-\frac{\partial L(\beta_0)}{\partial \beta_0} & = \sum_{i=1}^n  y_i -\frac{1}{1+e^{\beta_0}}e^{\beta_0}=0
+\displaystyle\frac{\partial L(\beta_0)}{\partial \beta_0} & = \displaystyle\frac{\partial}{\partial \beta_0} \sum_{i=1}^n  y_i \beta_0-ln(1+e^{\beta_0})\\
+\displaystyle\frac{\partial L(\beta_0)}{\partial \beta_0} & = \displaystyle\sum_{i=1}^n  y_i -\frac{1}{1+e^{\beta_0}}e^{\beta_0}=0
 \end{array}
 $$
 Esto implica que
-$$\frac{\sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0}}{1+e^{\beta_0}}=0$$
+$$\displaystyle\frac{\displaystyle\sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0}}{1+e^{\beta_0}}=0$$
 
 Despejando
 $$
 \begin{array}{rl}
-& \sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0} =0\\
-& \sum_{i=1}^n  y_i+y_ie^{\beta_0}-e^{\beta_0} =0\\
-& \sum_{i=1}^n  y_i+e^{\beta_0}(y_i-1) =0\\
-& \sum_{i=1}^n  y_i+e^{\beta_0}\sum_{i=1}^n(y_i-1) =0\\
-& \implies e^{\hat \beta_0}= \frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\\
-& \implies \hat \beta_0 = ln \left( \frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\right)\\
-&  \implies \hat \beta_0=ln \left( \frac{\sum_{i=1}^n  y_i}{\sum_{i=1}^n(1-y_i)}\right)\\
+& \displaystyle\sum_{i=1}^n  y_i(1+e^{\beta_0})-e^{\beta_0} =0\\
+& \displaystyle\sum_{i=1}^n  y_i+y_ie^{\beta_0}-e^{\beta_0} =0\\
+& \displaystyle\sum_{i=1}^n  y_i+e^{\beta_0}(y_i-1) =0\\
+& \displaystyle\sum_{i=1}^n  y_i+e^{\beta_0}\sum_{i=1}^n(y_i-1) =0\\
+& \implies e^{\hat \beta_0}= \displaystyle\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\\
+& \implies \hat \beta_0 = ln \left( \displaystyle\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}\right)\\
+&  \implies \hat \beta_0=ln \left( \displaystyle\frac{\sum_{i=1}^n  y_i}{\sum_{i=1}^n(1-y_i)}\right)\\
 \end{array}
 $$
 
 Sustituyendo en el modelo $\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i}$ tenemos:
 $$
 \begin{array}{rl}
-\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} & = \left( \frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}} \right)^{y_i}\left(1-\frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}}\right)^{1-y_i}\\
-& = \left( \frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}} \right)^{y_i}\left(\frac{1}{1+e^{\hat \beta_0}}\right)^{1-y_i}\\
-& = \left( \frac{\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}{1+\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\frac{1}{1+\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i} \\
-& = \left( \frac{\frac{-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}{\frac{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\frac{1}{\frac{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}{\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i}\\
-& = \left( \frac{-\sum_{i=1}^n y_i}{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i} \right)^{y_i}\left(\frac{\sum_{i=1}^n(y_i-1)}{\sum_{i=1}^n(y_i-1)-\sum_{i=1}^n  y_i}\right)^{1-y_i}\\
-& = \left( \frac{-\sum_{i=1}^n y_i}{-n} \right)^{y_i}\left(\frac{\sum_{i=1}^n(y_i-1)}{-n}\right)^{1-y_i}\\
-& = \left( \frac{\sum_{i=1}^n y_i}{n} \right)^{y_i}\left(-\frac{\sum_{i=1}^n(y_i-1)}{n}\right)^{1-y_i}\\
-& = \left( \frac{\sum_{i=1}^n y_i}{n} \right)^{y_i}\left(\frac{\sum_{i=1}^n(1-y_i)}{n}\right)^{1-y_i}\\
+\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} & = \left( \displaystyle\frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}} \right)^{y_i}\left(1-\displaystyle\frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}}\right)^{1-y_i}\\
+& = \left( \displaystyle\frac{e^{\hat \beta_0}}{1+e^{\hat \beta_0}} \right)^{y_i}\left(\displaystyle\frac{1}{1+e^{\hat \beta_0}}\right)^{1-y_i}\\
+& = \left( \displaystyle\frac{\displaystyle\frac{-\displaystyle\sum_{i=1}^n  y_i}{\displaystyle\sum_{i=1}^n(y_i-1)}}{1+\displaystyle\frac{-\displaystyle\sum_{i=1}^n  y_i}{\displaystyle\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\displaystyle\frac{1}{1+\displaystyle\frac{-\displaystyle\sum_{i=1}^n  y_i}{\displaystyle\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i} \\
+& = \left( \displaystyle\frac{\displaystyle\frac{-\sum_{i=1}^n  y_i}{\displaystyle\sum_{i=1}^n(y_i-1)}}{\displaystyle\frac{\displaystyle\sum_{i=1}^n(y_i-1)-\displaystyle\sum_{i=1}^n  y_i}{\displaystyle\sum_{i=1}^n(y_i-1)}} \right)^{y_i}\left(\displaystyle\frac{1}{\displaystyle\frac{\displaystyle\sum_{i=1}^n(y_i-1)-\displaystyle\sum_{i=1}^n  y_i}{\displaystyle\sum_{i=1}^n(y_i-1)}}\right)^{1-y_i}\\
+& = \left( \displaystyle\frac{-\sum_{i=1}^n y_i}{\displaystyle\sum_{i=1}^n(y_i-1)-\displaystyle\sum_{i=1}^n  y_i} \right)^{y_i}\left(\displaystyle\frac{\displaystyle\sum_{i=1}^n(y_i-1)}{\displaystyle\sum_{i=1}^n(y_i-1)-\displaystyle\sum_{i=1}^n  y_i}\right)^{1-y_i}\\
+& = \left( \displaystyle\frac{-\displaystyle\sum_{i=1}^n y_i}{-n} \right)^{y_i}\left(\displaystyle\frac{\displaystyle\sum_{i=1}^n(y_i-1)}{-n}\right)^{1-y_i}\\
+& = \left( \displaystyle\frac{\displaystyle\sum_{i=1}^n y_i}{n} \right)^{y_i}\left(-\frac{\displaystyle\sum_{i=1}^n(y_i-1)}{n}\right)^{1-y_i}\\
+& = \left( \displaystyle\frac{\displaystyle\sum_{i=1}^n y_i}{n} \right)^{y_i}\left(\displaystyle\frac{\displaystyle\sum_{i=1}^n(1-y_i)}{n}\right)^{1-y_i}\\
 \end{array}
 $$
 
@@ -522,24 +522,24 @@ $$\pi(x_i)^{y_i}(1-\pi(x_i))^{1-y_i} = \left( \frac{n_1}{n} \right)^{y_i}\left(\
 Por lo tanto, la verosimilitud del modelo sin la variable es:
 $$
 \begin{array}{rl}
-l(\beta) & =  ln\left(\prod_{i=1}^n \left( \frac{n_1}{n} \right)^{y_i}\left(\frac{n_0}{n}\right)^{1-y_i} \right)\\
- & =  ln\left( \left( \frac{n_1}{n} \right)^{\sum_{i=1}^n y_i}\left(\frac{n_0}{n}\right)^{\sum_{i=1}^n 1-y_i}\right)\\
-l(\beta) & =  ln\left( \left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}\right)\\
+l(\beta) & =  ln\left(\displaystyle\prod_{i=1}^n \left( \frac{n_1}{n} \right)^{y_i}\left(\frac{n_0}{n}\right)^{1-y_i} \right)\\
+ & =  ln\left( \left( \displaystyle\frac{n_1}{n} \right)^{\displaystyle\sum_{i=1}^n y_i}\left(\displaystyle\frac{n_0}{n}\right)^{\displaystyle\sum_{i=1}^n 1-y_i}\right)\\
+l(\beta) & =  ln\left( \left( \displaystyle\frac{n_1}{n} \right)^{n_1}\left(\displaystyle\frac{n_0}{n}\right)^{n_0}\right)\\
 \end{array}
 $$
 
 Sustituyendo esto, y la verosimilitud de un modelo con una variable, tenemos:
-$$G = -2ln\left(\frac{\left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}}{\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}} \right)$$ 
+$$G = -2ln\left(\displaystyle\frac{\left( \displaystyle\frac{n_1}{n} \right)^{n_1}\left(\displaystyle\frac{n_0}{n}\right)^{n_0}}{\displaystyle\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}} \right)$$ 
 
 Otra forma de escribir esto es:
 $$
 \begin{array}{rl}
-G & = -2ln\left(\left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}\right) +2ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}} \right)\\
- & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - ln\left(\left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}\right) \right)\\
- & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln\left( \frac{n_1}{n} \right)+ n_0 ln \left(\frac{n_0}{n}\right)] \right)\\
- & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-n_1ln(n) + n_0 ln(n_0) - n_0 ln(n)] \right)\\
- & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-ln(n)(n_1+n_0) + n_0 ln(n_0)] \right)\\
-G & = 2\left(ln\left( {\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-nln(n) + n_0 ln(n_0)] \right)\\
+G & = -2ln\left(\left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}\right) +2ln\left( {\displaystyle\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}} \right)\\
+ & = 2\left(ln\left( {\displaystyle\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - ln\left(\left( \frac{n_1}{n} \right)^{n_1}\left(\frac{n_0}{n}\right)^{n_0}\right) \right)\\
+ & = 2\left(ln\left( {\displaystyle\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln\left( \frac{n_1}{n} \right)+ n_0 ln \left(\frac{n_0}{n}\right)] \right)\\
+ & = 2\left(ln\left( {\displaystyle\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-n_1ln(n) + n_0 ln(n_0) - n_0 ln(n)] \right)\\
+ & = 2\left(ln\left( {\displaystyle\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-ln(n)(n_1+n_0) + n_0 ln(n_0)] \right)\\
+G & = 2\left(ln\left( {\displaystyle\prod_{i=1}^n \hat \pi(x_i)^{y_i}(1-\hat \pi(x_i))^{1-y_i}}\right) - [n_1ln(n_1)-nln(n) + n_0 ln(n_0)] \right)\\
 \end{array}
 $$ 
 
@@ -554,22 +554,23 @@ El p-valor de esta prueba es de dos colas y corresponde $P(|z|>W)<1-\alpha$, don
 Algunos paquetes estadísticos muestran el estadístico $W^2=z^2$, el cual sigue una distribución chi-cuadado con 1 grado de libertad.
 
 El **test de Score** esta basado en la distribución teórica de la derivada del logaritmo de la verosimilitud. Es una prueba multivariante que requiere el calculo de una matriz. En el caso univariante esta basada en la distribución condicional de la deribada en la ecuación (4), dada la derivada en la ecuación (3).  
+
 Esta prueba usa el valor de la ecuación (4) calculado usando $\beta_0=\ln(n_1/n_0)$ y $\beta_1=0$, Así tenemos que:
 $$
 \begin{array}{rl}
-\hat \pi(x) & = \frac{e^{\hat\beta_0 + \hat\beta_1x}}{1+e^{\hat\beta_0 + \hat\beta_1x}}\\
- & = \frac{e^{\ln(\frac{n_1}{n_0})}}{1+e^{\ln(\frac{n_1}{n_0})}}\\
- & = \frac{\frac{n_1}{n_0}}{1+\frac{n_1}{n_0}}\\
- & = \frac{\frac{n_1}{n_0}}{\frac{n_0+n_1}{n_0}}\\
-\hat \pi(x) & = \frac{n_1}{n_0+n_1}\\
+\hat \pi(x) & = \displaystyle\frac{e^{\hat\beta_0 + \hat\beta_1x}}{1+e^{\hat\beta_0 + \hat\beta_1x}}\\
+ & = \displaystyle\frac{e^{\displaystyle\ln\Big(\displaystyle\frac{n_1}{n_0}\Big)}}{1+e^{\ln(\frac{n_1}{n_0})}}\\
+ & = \displaystyle\frac{\displaystyle\frac{n_1}{n_0}}{1+\frac{n_1}{n_0}}\\
+ & = \displaystyle\frac{\displaystyle\frac{n_1}{n_0}}{\displaystyle\frac{n_0+n_1}{n_0}}\\
+\hat \pi(x) & = \displaystyle\frac{n_1}{n_0+n_1}\\
 \end{array}
 $$
 
 Recordemos que $n_0+n_1=\sum_{i=1}^n y_i + \sum_{i=1}^n (1-y_i) =\sum_{i=1}^n y_i + n -\sum_{i=1}^n y_i=n$ por lo tanto:
 $$
 \begin{array}{rl}
-\hat \pi(x) & = \frac{n_1}{n}\\
- & = \frac{\sum_{i=1}^n y_i}{n}\\
+\hat \pi(x) & = \displaystyle\frac{n_1}{n}\\
+ & = \displaystyle\frac{\displaystyle\sum_{i=1}^n y_i}{n}\\
 \hat \pi(x)& = \bar y
 \end{array}
 $$
@@ -580,7 +581,7 @@ $$\sum_{i=1}^n x_i (y_i - \hat \pi(x))=\sum_{i=1}^n x_i (y_i - \bar y)$$
 El estimador de la varianza es $\bar y (1- \bar y)\sum_{i=1}^n (x_i-\bar x)^2$.
 
 El estadístico de esta prueba es 
-$$ST=\frac{\sum_{i=1}^n x_i (y_i - \bar y)}{\sqrt{\bar y (1- \bar y)\sum_{i=1}^n (x_i-\bar x)^2}}$$
+$$ST=\frac{\displaystyle\sum_{i=1}^n x_i (y_i - \bar y)}{\sqrt{\bar y (1- \bar y)\displaystyle\sum_{i=1}^n (x_i-\bar x)^2}}$$
 Se compara igual que la prueba de Wald, con una distribución normal estandar.
 
 ## Intervalos de confianza
@@ -627,7 +628,7 @@ Por otra parte el cociente de verosimilitudes mide el efecto o impacto que gener
 Entonces el cociente de verosimilitud se calcula como sigue
 
 $$
-\text{Cociente de verosimilitud}=L_{x_i}=\frac{V_{x_i=k+1}}{V_{x_i=k}}=\displaystyle\frac{\frac{P(Y=1|x_1,x_2,\dots,x_i=k+1,\dots,x_p)}{1-P(Y=1|x_1,x_2,\dots,x_i=k+1,\dots,x_p)}}{\frac{P(Y=1|x_1,x_2,\dots,x_i=k,\dots,x_p)}{1-P(Y=1|x_1,x_2,\dots,x_i=k,\dots,x_p)}}
+\text{Cociente de verosimilitud}=L_{x_i}=\frac{V_{x_i=k+1}}{V_{x_i=k}}=\displaystyle\frac{\displaystyle\frac{P(Y=1|x_1,x_2,\dots,x_i=k+1,\dots,x_p)}{1-P(Y=1|x_1,x_2,\dots,x_i=k+1,\dots,x_p)}}{\displaystyle\frac{P(Y=1|x_1,x_2,\dots,x_i=k,\dots,x_p)}{1-P(Y=1|x_1,x_2,\dots,x_i=k,\dots,x_p)}}
 $$
 
 Es importante notar que esta razón de verosimilitudes se calcula manteniendo el resto de las variables independientes constantes.
