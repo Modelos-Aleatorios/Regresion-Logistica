@@ -99,12 +99,12 @@ logit(p_i) &= g(AGE_i)
 $$
 
 $$
-logit(p_i)=\beta_0+\beta_1 AGE_i
+logit(p_i)=g(AGE_i)=\beta_0+\beta_1 AGE_i
 $$
 
 - ¿Qué características de la variable respuesta (explicada/dependiente), **STA**, nos induce a considerar un modelo de regresión logística en lugar del modelo de regresión lineal para describir la relación entre **STA** y **AGE**.
 
-La principal característica para pensar en un modelo de regresión logística es que la variable dependiente $STA$ es dicotómica, en el caso de la regresión lineal la variable es numérica y toma valores en toda la recta real es decir, entre $-\infty$ y $\infty$ en contraposición en el modelo de regresión logística la variable dependiente es discreta.
+La principal característica para pensar en un modelo de regresión logística es que la variable dependiente , en este caso $STA$, es dicotómica, en el caso de la regresión lineal la variable es numérica y toma valores en toda la recta real es decir, entre $-\infty$ y $\infty$; en contraposición en el modelo de regresión logística la variable dependiente es discreta.
 
 b)
 
@@ -115,43 +115,134 @@ plot(icu.reduced$AGE, icu.reduced$STA, main = "Estado Vital vs. Edad", xlab = "A
      ylab = "STA - Estado Vital al ser dado de alta", col=ifelse(icu.reduced$STA==1,"red","blue"))
 ```
 
+La variable **STA** es dicotómica y toma dos valores $0$ y $1$.
+
 Como se puede ver en la gráfica, en la medida que aumenta la edad hay más individuos muertos. Entonces el modelo logístico nos proporciona la probabilidad de que el Estado Vital sea Muerto en la medida que aumenta la Edad del paciente.
 
 c)
 
 - Utilizando los intervalos $[15, 24], [25, 34], [35, 44], [45, 54], [55, 64], [65, 74], [75, 84], [85, 94]$ para **AGE**, calcule la media de **STA** para todos los individuos de la muestra cuyas edades pertenecen a los intervalos definidos en **AGE**.
 
+Para encontrar cuantos sujetos se encuentra en cada intervalo definimos un vector `intervalos` con los límites inferiores de cada intervalo y con la función `findInterval` podemos obtener un vector con la posición de cada sujeto. Si aplicamos `table` podemos obtener cuantos individuos pertenece a cada invervalo.
+
+```{r}
+#Limites inferiores de los intervalos
+intervalos<-c(15, 25, 35, 45, 55, 65, 75, 85, 94) 
+
+#Primero debemos encontrar a cual intervalo pertenece cada sujeto
+sujetosPorIntervalo<-findInterval(icu.reduced$AGE, intervalos)
+sujetosPorIntervalo
+```
+
+Ya tenemos la cantidad de individuos por cada intervalo definido mediante la función `findInterval`.
+
+Ahora vamos a calcular la cantidad de pacientes con $STA=1$, es decir, con Estado Vital Muerto al momento de salir de la clínica.
+
+```{r}
+#Función para contar la cantidad estados iguales
+#a muerto, en cada intervalo
+dead<-c()
+for (i in min(sujetosPorIntervalo):max(sujetosPorIntervalo)) {
+  dead<-c(dead, sum(icu.reduced$STA[sujetosPorIntervalo==i]))
+}
+dead
+```
+
+Calculemos los puntos medios de cada intervalo.
+
+```{r}
+#Puntos medios de cada intervalo
+mid<-c()
+for (i in 1:(length(intervalos)-1)) {
+  mid<-c(mid, intervalos[i]+9/2)
+}
+mid
+```
+
+Ahora vamos a calcular la proporción de Muertos dentro de cada intervalo.
+```{r}
+#Data.frame con la frecuencias en cada intervalo 
+dfFreq<-as.data.frame(table(sujetosPorIntervalo))
+
+#Medias de los muertos en cada intervalo
+deadMean<-dead/dfFreq$Freq
+round(deadMean, digits = 3)
+```
+
+Este último vector nos indica las medias de los intervalos anteriores, con esto reforzamos lo que se habia dicho anteriormente que cuando aumenta la edad la cantidad de personas muertas aumenta, vemos que los promedios aumentan de $7.7\%$ en el primer intervalo a $45.5\%$ en el último intervalo.
+
+
+A manera didáctica también podemos calcular la cantidad de individuos por intervalo mediante la función `cut`.  La diferencia se encuentra en la forma como se especifican los intervalos.
+
+```{r}
+intervalos2<-c(15, 24, 34, 44, 54, 64, 74, 84, 94)
+tblFreq<-table(cut(icu.reduced$AGE, breaks = intervalos2))
+tblFreq
+table(sujetosPorIntervalo)
+```
+
+Podemos ver que el resultado es consistente.
+
+Con esta información podemos graficar la cantidad de pacientes por intervalo.
+```{r}
+plot(tblFreq, main = "Pacientes en cada Intervalo", 
+    xlab="AGE - Edad", ylab = "Media Estado Vital (STA)", type = "l", col= "blue")
+```
+
 - Dibuje los valores de la media de **STA** versus el punto medio del intervalo de **AGE** correspondiente, utilizando los mismos ejes utilizados en b)
+
+Con los cálculos realizados previamente ya contamos con los datos para dibujar los puntos medios de Edad y la proporción de pacientes Muertos.
+```{r}
+plot(mid, deadMean, main = "Punto Medio por Intervalo vs. Media del Estado Vital", 
+    xlab="Punto Medio por Intervalo de Edad", ylab = "Media del Estado Vital (STA)", type = "l", col= "blue")
+```
 
 d)
 
 - Escriba una expresión para la verosimilitud y el logaritmo de la verosimilitud para el modelo de regresión logística utilizando los datos no agrupados, $n=200$.
 
+
+
 - Obtenga la expresión para las dos ecuaciones de verosimilitud.
+
 
 
 e)
 
 - Utilizando el paquete de regresión logística de su preferencia obtenga los estimadores de máxima verosimilitud de los parámetros del modelo de regresión logística basado en **STA** y **AGE**. Estos estimadores deben estar basados en los datos no agrupados, $n=200$. 
 
+
+
 - Utilizando los parámetros estimados escriba la ecuación de los valores ajustados, es decir, las probabilidades logísticas estimadas.
 
+
+
 - Haga un gráfico de la ecuación de los valores ajustados en los ejes utilizados en el gráfico realizado en b) y c).
+
 
 
 f)
 
 - Resuma los resultados de acuerdo a los gráficos obtenidos de los ejercicios b), c) y e).
 
+
+
 g)
 
 - Usando los resultados de la regresión logística aplicada a los datos en e), verifique la significancia del coeficiente para **AGE** utilizando la prueba de razones de verosimilitudes, la prueba de Wald y, si es posible, la prueba de Score.
 
+
+
 - ¿Qué premisas son necesarias para calcular los $p$-valores para que cada una de estas pruebas de hipótesis sean válidas?
+
+
 
 - ¿Los resultados de estas pruebas son consistentes entre ellos?
 
+
+
 - ¿Cual es el valor de la devianza para el modelo ajustado?
+
 
 
 h)
