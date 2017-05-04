@@ -104,6 +104,8 @@ $$
 
 - ¿Qué características de la variable respuesta (explicada/dependiente), **STA**, nos induce a considerar un modelo de regresión logística en lugar del modelo de regresión lineal para describir la relación entre **STA** y **AGE**.
 
+La principal característica para pensar en un modelo de regresión logística es que la variable dependiente $STA$ es dicotómica, en el caso de la regresión lineal la variable es numérica y toma valores en toda la recta real es decir, entre $-\infty$ y $\infty$ en contraposición en el modelo de regresión logística la variable dependiente es discreta.
+
 b)
 
 - Haga un gráfico (nube de puntos) de **STA** versus **AGE**.
