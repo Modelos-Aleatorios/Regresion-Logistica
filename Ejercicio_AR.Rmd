@@ -77,7 +77,7 @@ icu.reduced<-as.data.frame(icu.reduced)
 head(icu.reduced)
 ```
 
-a)
+### a)
 
 - Escriba la ecuación para el modelo de regresión logística de Estado Vital (**STA**) y Edad (**AGE**).
 
@@ -98,6 +98,7 @@ logit(p_i) &= g(AGE_i)
 \end{array}
 $$
 
+Entonces nos queda
 $$
 logit(p_i)=g(AGE_i)=\beta_0+\beta_1 AGE_i
 $$
@@ -106,20 +107,22 @@ $$
 
 La principal característica para pensar en un modelo de regresión logística es que la variable dependiente , en este caso $STA$, es dicotómica, en el caso de la regresión lineal la variable es numérica y toma valores en toda la recta real es decir, entre $-\infty$ y $\infty$; en contraposición en el modelo de regresión logística la variable dependiente es discreta.
 
-b)
+### b)
 
 - Haga un gráfico (nube de puntos) de **STA** versus **AGE**.
 
 ```{r}
-plot(icu.reduced$AGE, icu.reduced$STA, main = "Estado Vital vs. Edad", xlab = "AGE - Edad",
-     ylab = "STA - Estado Vital al ser dado de alta", col=ifelse(icu.reduced$STA==1,"red","blue"))
+plot(icu.reduced$AGE, icu.reduced$STA, 
+     main = "Estado Vital vs. Edad", xlab = "AGE - Edad",
+     ylab = "STA - Estado Vital al ser dado de alta", 
+     col=ifelse(icu.reduced$STA==1,"red","blue"))
 ```
 
 La variable **STA** es dicotómica y toma dos valores $0$ y $1$.
 
 Como se puede ver en la gráfica, en la medida que aumenta la edad hay más individuos muertos. Entonces el modelo logístico nos proporciona la probabilidad de que el Estado Vital sea Muerto en la medida que aumenta la Edad del paciente.
 
-c)
+### c)
 
 - Utilizando los intervalos $[15, 24], [25, 34], [35, 44], [45, 54], [55, 64], [65, 74], [75, 84], [85, 94]$ para **AGE**, calcule la media de **STA** para todos los individuos de la muestra cuyas edades pertenecen a los intervalos definidos en **AGE**.
 
@@ -133,8 +136,7 @@ intervalos<-c(15, 25, 35, 45, 55, 65, 75, 85, 94)
 sujetosPorIntervalo<-findInterval(icu.reduced$AGE, intervalos)
 sujetosPorIntervalo
 ```
-
-Ya tenemos la cantidad de individuos por cada intervalo definido mediante la función `findInterval`.
+Podemos ver que `findInterval` nos genera un vector con el número del intervalo al cual pertenece cada dato. Con este vector podemos calcular cuantos individuos hay en cada intervalo mediante una función como `table`.
 
 Ahora vamos a calcular la cantidad de pacientes con $STA=1$, es decir, con Estado Vital Muerto al momento de salir de la clínica.
 
@@ -186,18 +188,22 @@ Podemos ver que el resultado es consistente.
 Con esta información podemos graficar la cantidad de pacientes por intervalo.
 ```{r}
 plot(tblFreq, main = "Pacientes en cada Intervalo", 
-    xlab="AGE - Edad", ylab = "Media Estado Vital (STA)", type = "l", col= "blue")
+    xlab="AGE - Edad", ylab = "Media Estado Vital (STA)", 
+    type = "l", col= "blue")
 ```
 
 - Dibuje los valores de la media de **STA** versus el punto medio del intervalo de **AGE** correspondiente, utilizando los mismos ejes utilizados en b)
 
 Con los cálculos realizados previamente ya contamos con los datos para dibujar los puntos medios de Edad y la proporción de pacientes Muertos.
 ```{r}
-plot(mid, deadMean, main = "Punto Medio por Intervalo vs. Media del Estado Vital", 
-    xlab="Punto Medio por Intervalo de Edad", ylab = "Media del Estado Vital (STA)", type = "l", col= "blue")
+plot(mid, deadMean, 
+     main = "Punto Medio por Intervalo vs. Media del Estado Vital", 
+    xlab="Punto Medio por Intervalo de Edad", 
+    ylab = "Media del Estado Vital (STA)", 
+    type = "l", col= "blue")
 ```
 
-d)
+### d)
 
 - Escriba una expresión para la verosimilitud y el logaritmo de la verosimilitud para el modelo de regresión logística utilizando los datos no agrupados, $n=200$.
 
@@ -207,7 +213,7 @@ d)
 
 
 
-e)
+### e)
 
 - Utilizando el paquete de regresión logística de su preferencia obtenga los estimadores de máxima verosimilitud de los parámetros del modelo de regresión logística basado en **STA** y **AGE**. Estos estimadores deben estar basados en los datos no agrupados, $n=200$. 
 
@@ -221,13 +227,13 @@ e)
 
 
 
-f)
+### f)
 
 - Resuma los resultados de acuerdo a los gráficos obtenidos de los ejercicios b), c) y e).
 
 
 
-g)
+### g)
 
 - Usando los resultados de la regresión logística aplicada a los datos en e), verifique la significancia del coeficiente para **AGE** utilizando la prueba de razones de verosimilitudes, la prueba de Wald y, si es posible, la prueba de Score.
 
@@ -245,13 +251,13 @@ g)
 
 
 
-h)
+### h)
 
 - Utilizando los resultados del ejercicio e) calcule el intervalo de confianza con un nivel de $95\%$ para el término constante $\hat\beta_0$ y para la pendiente (parámetro $\hat\beta_1$).
 
 - Interprete el intervalo de confianza para la pendiente (parámetro $\hat\beta_1$).
 
-i)
+### i)
 
 - Obtenga la matriz de covarianza estimada para el modelo ajustado en e).
 
@@ -261,7 +267,7 @@ i)
 
 - Escriba una interpretación de la probabilidad estimada y su intervalo de confianza.
 
-j)
+### j)
 
 - Realice la regresión logística para obtener el *logit* estimado y su error estándar para cada sujeto en el estudio **ICU**.
 
