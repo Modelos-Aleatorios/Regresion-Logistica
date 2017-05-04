@@ -110,6 +110,13 @@ b)
 
 - Haga un gráfico (nube de puntos) de **STA** versus **AGE**.
 
+```{r}
+plot(icu.reduced$AGE, icu.reduced$STA, main = "Estado Vital vs. Edad", xlab = "AGE - Edad",
+     ylab = "STA - Estado Vital al ser dado de alta")
+```
+
+Como se puede ver en la gráfica, en la medida que aumenta la edad hay más individuos muertos. Entonces el modelo logístico nos proporciona la probabilidad de que el Estado Vital sea Muerto en la medida que aumenta la Edad del paciente.
+
 c)
 
 - Utilizando los intervalos $[15, 24], [25, 34], [35, 44], [45, 54], [55, 64], [65, 74], [75, 84], [85, 94]$ para **AGE**, calcule la media de **STA** para todos los individuos de la muestra cuyas edades pertenecen a los intervalos definidos en **AGE**.
