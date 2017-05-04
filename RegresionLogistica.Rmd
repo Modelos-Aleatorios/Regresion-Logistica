@@ -22,19 +22,19 @@ library(latex2exp)
 
 ## Marco Teórico
 
-Para predecir el comportamiento de una variable que depende de otras variables es usual la aplicación de los métodos de regresión. Entre ellos el más popular es la regresión lineal. El proceso consiste en encontrar los parámetros de una función lineal (una recta en este caso) que mejor se ajusta a los datos (con la menor distancia). El criterio para encontrar la mejor, básicamente, consiste en minimizar los errores y para ellos se utiliza el método de mínimos cuadrados.
+Para predecir el comportamiento de una variable que depende de otras variables es usual la aplicación de los métodos de regresión. Entre ellos el más popular es la regresión lineal. El proceso consiste en encontrar los parámetros de una función lineal (una recta en este caso) que mejor se ajusta a los datos (con la menor distancia agregada entre los datos y la recta). El criterio para encontrar la mejor, básicamente, consiste en minimizar los errores (la diferencia entre el valor y el estimador) y para ello se utiliza el método de mínimos cuadrados.
 
-Hay un caso en el cual la regresión lineal no se comporta apropiadamente, y este es el caso donde la variable de respuesta es dicotómica (ocurra o no algún evento). Veamos a continuación porque pasa esto: 
+Hay un caso en el cual la regresión lineal no se comporta apropiadamente, y este es el caso donde la variable de respuesta es dicotómica, es decir, que ocurra o no algún evento, por lo tanto toma dos valores posibles. Veamos a continuación porque ocurre esto: 
 
-Supongamos que queremos predecir el valor de la variable de respuesta $Y$ dicotómica en un individuo de la población en función de ciertas características medibles $X_1,X_2,...,X_n$. 
+Supongamos que queremos predecir el valor de la variable dicotómica dependiente o de respuesta $Y$,  en un individuo de la población, en función de ciertas características medibles que definen las variables $X_1,X_2,...,X_n$.
 
 Comenzaremos ajustando un modelo de regresión lineal simple cuando tenemos una sola variable explicativa, que llamaremos $X$ y que puede ser numérica o categórica, es decir
 $$Y=\beta_0 + \beta_1X+\epsilon$$
 $$\epsilon \sim \mathcal{N}(0,\sigma)$$
 
-Como la variable respuesta es binaria (toma valor 0 o 1) diremos que es una variable aleatoria Bernoulli y con respecto a la $X$ es una variable observada, sus valores son conocidos. Asumiremos que tenemos $n$ elementos de ambas $(x_i,y_i)$ con $i=1,2,...,n$. Y supongamos que $\epsilon$ representara el error aleatorio.
+Como la variable respuesta es dicotómica (toma dos valores) y en este caso binaria, toma valor 0 o 1, diremos que es una variable aleatoria Bernoulli que depende de una variable independiente $X$, que es una variable observada y sus valores son conocidos. Asumiremos que contamos con $n$ elementos de ambas variable y generamos pares de la forma $(x_i, y_i)$ con $i=1,2,...,n$. Por otra parte supongamos que $\epsilon$ representa el error aleatorio.
 
-Observemos los inconvenientes de este modelo:
+Observemos los inconvenientes de este modelo, cuando la variable dependiente es dicotómica:
 
 - Cuando calculamos **la esperanza del modelo** tenemos
 $$
@@ -45,18 +45,32 @@ E(Y_i) & = \beta_0 + \beta_1X_i
 \end{array}
 $$
 
-Si escribimos el modelo como $\beta_0 + \beta_1X_i=p_i$ donde $p_i=P(Y_i=1)$
+Si escribimos el modelo como $p_i=\beta_0 + \beta_1X_i$ donde $p_i=E(Y_i)=1\times P(Y_i=1)+0\times P(Y_i=0)=P(Y_i=1)$
 $$Y_i= \left \{ \begin{matrix} 1 & \text{con probabilidad} &  p_i\\ 0 & \text{con probabilidad} & 1-p_i  \end{matrix} \right.$$
 
 Así este modelo estimaría la probabilidad de que ocurra el evento $Y_i$. Como $p_i$ es una probabilidad su valor deberia estar entre 0 y 1 $(0\le p_i\le 1)$ para todo $i$. Pero como $X_i$, $\beta_0$ y $\beta_1$ pueden tomar cualquier valor entre $(-\infty,\infty)$ el modelo de regresión lineal no garantiza que siempre de un valor entre cero y uno.
 
 - **Valores que toma el error**: La variable de respuesta solo toma los valores cero y uno, ahora si conocemos la variable explicativa $X$ tenemos
 $$
-\begin{array}{rl}
-\epsilon_i & = Y_i-\beta_0+\beta_1X_i\\
-\epsilon_i & = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i) & \text{con probabilidad} & p_i \\ 0 -(\beta_0+\beta_1X_i)& \text{con probabilidad} & 1-p_i \end{matrix} \right.\\
-\epsilon_i & = \left \{ \begin{matrix} 1 -(\beta_0+\beta_1X_i) & \text{con probabilidad} & p_i \\ -(\beta_0+\beta_1X_i) & \text{con probabilidad} & 1-p_i  \end{matrix} \right.\\
-\epsilon_i & = \left \{ \begin{matrix} 1 -p_i & \text{con probabilidad} & p_i \\ -p_i & \text{con probabilidad} & 1-p_i  \end{matrix} \right.
+\begin{array}{rlr}
+\epsilon_i & = Y_i-(\beta_0+\beta_1X_i)\\
+ & = \left 
+ \{ 
+ \begin{matrix} 
+ 1 -(\beta_0+\beta_1X_i) & \text{con probabilidad} & p_i \\ 
+ 0 -(\beta_0+\beta_1X_i)& \text{con probabilidad} & 1-p_i 
+ \end{matrix} \right.\\
+ & = \left 
+ \{ 
+ \begin{matrix} 1 -(\beta_0+\beta_1X_i) & \text{con probabilidad} & p_i \\ 
+ -(\beta_0+\beta_1X_i) & \text{con probabilidad} & 1-p_i  
+ \end{matrix} \right.\\
+\epsilon_i & = \left 
+\{ 
+\begin{matrix} 
+1 -p_i & \text{con probabilidad} & p_i \\ 
+-p_i & \text{con probabilidad} & 1-p_i  
+\end{matrix} \right.
 \end{array}
 $$
 
@@ -73,13 +87,18 @@ $$
 
 Aunque la esperanza de esta variable es cero, no cumple con el supuesto de normalidad de los errores, ya que toma valores discretos. Esto nos llevaría a estimadores poco eficientes.
 
-- **Varianza de los errores**:
+- **Varianza de los errores**
 
 Para el cálculo de la varianza de los errores tenemos que definir primero $\epsilon_i^2$
 $$
 \begin{array}{rl}
-\epsilon_i^2 & = \left \{ \begin{matrix} (1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ (-p_i)^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
-\epsilon_i^2 & = \left \{ \begin{matrix} (1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ p_i^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right. 
+\epsilon_i^2 & = \left \{ 
+\begin{matrix} 
+(1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ (-p_i)^2\ \mbox{con probabilidad} \ 1-p_i  \end{matrix} \right.\\
+\epsilon_i^2 & = \left \{ 
+\begin{matrix} 
+(1 -p_i)^2\ \mbox{con probabilidad} \ p_i \\ p_i^2\ \mbox{con probabilidad} \ 1-p_i  
+\end{matrix} \right. 
 \end{array}
 $$
 
