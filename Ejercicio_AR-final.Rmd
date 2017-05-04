@@ -397,7 +397,7 @@ En este caso los resultados han sido consistentes indicando que los parámetros 
 mod.AGE$deviance
 ```
 
-h)
+### h)
 
 - Utilizando los resultados del ejercicio e) calcule el intervalo de confianza con un nivel de $95\%$ para el término constante $\hat\beta_0$ y para la pendiente (parámetro $\hat\beta_1$)
 
