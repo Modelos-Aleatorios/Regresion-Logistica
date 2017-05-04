@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #https://github.com/stefano-meschiari/latex2exp
 #install.packages('latex2exp')
 library(latex2exp)
+library(knitr)
 ```
 
 
@@ -269,19 +270,62 @@ $$\sum_{i=1}^{200} age_i \left( sta_i -\pi(age_i) \right)=0$$
 
 
 
+```{r}
+#Modelo de regresión logística con la variable independiente AGE
+# y variable dependiente STA
+mod.AGE <- glm(STA ~ AGE, data = icu.reduced, family = "binomial")
+mod.AGE$coefficients
+```
+
+Con el comando usado, obtuvimos que los estimadores de máxima verosimilitud de los parámetros $\beta_0$ y $\beta_1$ son: $\hat\beta_0=$ `r mod.AGE$coefficients[1]` y $\hat\beta_1=$ `r mod.AGE$coefficients[2]`.
+
 - Utilizando los parámetros estimados escriba la ecuación de los valores ajustados, es decir, las probabilidades logísticas estimadas.
 
-
+Los valores ajustados vienen dados por la ecuación
+$$
+\hat\pi(age)=\displaystyle\frac{e^{-3.05851+0.02754 age}}{1+e^{-3.05851+0.02754 age}}=\frac{1}{1+e^{3.05851-0.02754 age}}
+$$
 
 - Haga un gráfico de la ecuación de los valores ajustados en los ejes utilizados en el gráfico realizado en b) y c).
 
+Este primer gráfico utiliza las edades de los pacientes ordenadas de menor a mayor.
+```{r}
+beta0<-mod.AGE$coefficients[1]
+beta1<-mod.AGE$coefficients[2]
 
+x<-sort(icu.reduced$AGE) #Edades ordenadas
+pi<-exp(beta0+beta1*x)
+y<- pi/(1+pi)
+plot(x, y, type = "l", col= "blue", main = TeX('Edad vs Estimador de pi'), 
+    xlab="AGE - Edad", ylab = TeX('Estimador de pi'))
+```
+
+
+Este gráfico utiliza los puntos medios de los intervalos definidos en c).
+```{r}
+x<-mid #Puntos medios de las clases de edades
+pi<-exp(beta0+beta1*x)
+y<- pi/(1+pi)
+plot(x, y, type = "l", col= "blue", main = TeX('Edad vs Estimador de pi'), 
+    xlab="AGE - Edad", ylab = TeX('Estimador de pi'))
+```
+
+Ahora estamos recorriendo el rango de $0$ a $300$ para ver la gráfica en forma de "S" completa.
+```{r}
+x<-0:300
+pi<-exp(beta0+beta1*x)
+y<- pi/(1+pi)
+plot(x, y, type = "l", col= "blue", main = TeX('Edad vs Estimador de pi'), 
+    xlab="AGE - Edad", ylab = TeX('Estimador de pi'))
+```
 
 ### f)
 
 - Resuma los resultados de acuerdo a los gráficos obtenidos de los ejercicios b), c) y e).
 
+Como ya hemos planteado, la probabilidad de que un paciente salga de alta vivo es de $55\%$ si el paciente tiene 90 años. 
 
+Cada gráfico es consistente con el aumento de la probabilidad de tener un Estado Vital Muerto en la medida que aumenta la edad.
 
 ### g)
 
@@ -305,7 +349,11 @@ $$\sum_{i=1}^{200} age_i \left( sta_i -\pi(age_i) \right)=0$$
 
 - Utilizando los resultados del ejercicio e) calcule el intervalo de confianza con un nivel de $95\%$ para el término constante $\hat\beta_0$ y para la pendiente (parámetro $\hat\beta_1$).
 
+
+
 - Interprete el intervalo de confianza para la pendiente (parámetro $\hat\beta_1$).
+
+
 
 ### i)
 
