@@ -112,7 +112,7 @@ b)
 
 ```{r}
 plot(icu.reduced$AGE, icu.reduced$STA, main = "Estado Vital vs. Edad", xlab = "AGE - Edad",
-     ylab = "STA - Estado Vital al ser dado de alta")
+     ylab = "STA - Estado Vital al ser dado de alta", col=ifelse(icu.reduced$STA==1,"red","blue"))
 ```
 
 Como se puede ver en la gráfica, en la medida que aumenta la edad hay más individuos muertos. Entonces el modelo logístico nos proporciona la probabilidad de que el Estado Vital sea Muerto en la medida que aumenta la Edad del paciente.
