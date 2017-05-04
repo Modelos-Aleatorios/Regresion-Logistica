@@ -34,4 +34,4 @@ vignettes/*.pdf
 .Rproj.user
 
 *.pdf
-!/Libros/*.pdf
+!/material/*.pdf
