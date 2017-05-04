@@ -327,6 +327,8 @@ Como ya hemos planteado, la probabilidad de que un paciente salga de alta vivo e
 
 Cada gráfico es consistente con el aumento de la probabilidad de tener un Estado Vital Muerto en la medida que aumenta la edad.
 
+La probabilidad aumenta muy lentamente con edades bajas y después de los $50$ años aumenta con mayor velocidad.
+
 ### g)
 
 - Usando los resultados de la regresión logística aplicada a los datos en e), verifique la significancia del coeficiente para **AGE** utilizando la prueba de razones de verosimilitudes, la prueba de Wald y, si es posible, la prueba de Score.
