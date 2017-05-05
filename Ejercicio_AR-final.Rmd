@@ -387,6 +387,7 @@ De forma análoga se calcula el estadístico especificando el parámetro `test="
 
 - ¿Qué premisas son necesarias para calcular los $p$-valores para que cada una de estas pruebas de hipótesis sean válidas?
 
+Es necesario definir una hipótesis nula, calcular un estadístico, definir un nivel de significancia y los datos. Los parámetros deben tener la propiedad de la normalidad asintótica para que el modelo aproveche la regularidad que ofrece la normal.
 
 - ¿Los resultados de estas pruebas son consistentes entre si?
 
